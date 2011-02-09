@@ -14,17 +14,22 @@ def twinky():
 
 def my_py_test2():   
      return ("PR0N")
-pyText = my_py_test2()
+
+def tConnectPy():
+  return twcm.test()
+
+
+def tFavsPy(spojeni):
+  return(twcm.vypis(spojeni))
+
 </script>
 
 <script>
 var menu = Titanium.UI.createMenu();
     var file = Titanium.UI.createMenuItem("File");
     file.addItem("Quit",function() {
-// 	alert(my_py_test2());
-// 	alert('File activated');
 	Titanium.App.exit();
-     },"./n0.png");
+     },"./n0M.png");
 //     file.addEventListener(Titanium.CLICKED, function(event)
 //     {
 //         alert("Help activated");
@@ -33,35 +38,23 @@ var menu = Titanium.UI.createMenu();
 //     menu.appendItem(ahoj);
     file.addSeparatorItem();
     menu.appendItem(file);
-
-//     menu.appendItem(file);
     Titanium.UI.setMenu(menu);
-//     file.addEventListener(Titanium.CLICKED, function(event)
-//     {
-//         alert("Help activated");
-//     });
-//     var file = Titanium.UI.createMenuItem('File', function() {
-//         alert('File activated');
-//      });
-
 </script>
+
 <script>
 Titanium.UI.addTray("./n0.png")
 var globalObject;
 var pyText = "";
 
-
 Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
     {
             alert("Got page initialized event!");
     });
-
-
-
 </script>
 
 
 <script>
+var spojeni;
 
 function pageloads()
 {
@@ -71,21 +64,29 @@ function pageloads()
    alert(pyText)
 //    Titanium.App.exit()
 
-//   notify = Titanium.Notification.createNotification()
-//   notify = Titanium.Notification.Notification.SetMessage(":-P")
-//   notify.show()
 //   document.write(":-P")
 // document.write("<h1>Hello World!</h1>");
 //   alert(my_python_function([1, 2, 3, 4]));
 }
+
 function twink()
 {
 //   alert(twink());
       var YY;
       YY = twinky()
-      alert(YY)
+//       alert(YY)
 //       document.write(YY);
+      document.write("<h1>" + YY +"</h1>");
+// 	 document.write('<a href="#" onclick="history.back()">&lt;- Zpět</a> <a href="#" onclick="history.forward()">Vpřed</a>');       
 }
+
+function tConnect()
+{
+  spojeni = tConnectPy()
+  document.write("<h1>" + tFavsPy(spojeni) + "</h1>")
+//   document.write("<h1>" + tFavsPy(spojeni) + "</h1>");
+}
+
 function presmeruj()
 {
   window.location.href="http://google.com";
@@ -95,8 +96,10 @@ function presmeruj()
     alert("ahoj");
 </script>-->
 <h1 OnClick="pageloads()">XXX</h1>
+<h2><a href="#" OnClick = "tConnect()" >Připoj se</h2>
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <p OnClick="twink()">TWINK</p>
+<a href="./zpet.html">ZPET</a>
 
 </body>
 </html>
