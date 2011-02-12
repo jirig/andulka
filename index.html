@@ -16,13 +16,43 @@ def my_py_test2():
      return ("PR0N")
 
 def tConnectPy():
+  print "Spojuji------"
   return twcm.test()
 
 
 def tFavsPy(spojeni):
-  return(twcm.vypis(spojeni))
+  document.write("<p>"+twcm.vypis(spojeni)+"</p>")
 
 </script>
+<script>
+function updateTime()
+
+{
+
+var now = new Date();
+
+var hours = now.getHours();
+
+var minutes = now.getMinutes();
+
+var seconds = now.getSeconds();
+
+window.document.getElementById('time').innerHTML =
+
+hours + ":" +
+
+(minutes<10?"0" +minutes:minutes) + ":" +
+
+(seconds<10?"0" + seconds:seconds);
+
+}
+
+setInterval(updateTime, 1000);
+var spojeni;
+tConnect();
+</script>
+
+
 
 <script>
 var menu = Titanium.UI.createMenu();
@@ -54,7 +84,7 @@ Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
 
 
 <script>
-var spojeni;
+// var spojeni;
 
 function pageloads()
 {
@@ -82,8 +112,10 @@ function twink()
 
 function tConnect()
 {
+  
   spojeni = tConnectPy()
-  document.write("<h1>" + tFavsPy(spojeni) + "</h1>")
+//   tFavsPy(spojeni)
+//   document.write("<h1>" + tFavsPy(spojeni) + "</h1>")
 //   document.write("<h1>" + tFavsPy(spojeni) + "</h1>");
 }
 
@@ -96,10 +128,12 @@ function presmeruj()
     alert("ahoj");
 </script>-->
 <h1 OnClick="pageloads()">XXX</h1>
-<h2><a href="#" OnClick = "tConnect()" >Připoj se</h2>
+<script>tConnect()</script>
+<h2><a href="#" OnClick = "tFavsPy(spojeni)" >Get TimeLine</h2>
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <p OnClick="twink()">TWINK</p>
 <a href="./zpet.html">ZPET</a>
+<div id="time" style="padding:10px">Welcome to Titanium</div>
 
 </body>
 </html>
