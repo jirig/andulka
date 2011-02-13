@@ -29,6 +29,11 @@ def test():
   print "=====================SPOJENO"
   return twitter
   
+def publishStatus(twitter, text):
+  twitter.UpdateStatus(text)
+  
+  
+  
   #user_timeline = twitter.GetUserTimeline()
   #user_timeline = twitter.GetAllUsersFavs()
   #return vypis(user_timeline)

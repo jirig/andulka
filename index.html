@@ -5,6 +5,9 @@
 </head>
 
 <body>
+<script>
+var spojeni;
+</script>
 
 <script type="text/python">
 import twcm
@@ -24,6 +27,11 @@ def tFavsPy(spojeni):
 
   window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni)
 
+def posliStatusPy(spojeni):
+  text = window.document.getElementById('statusArea').value;
+  twcm.publishStatus(spojeni, text);
+  alert("odeslano");
+  
 </script>
 <script>
 function updateTime()
@@ -49,7 +57,7 @@ hours + ":" +
 }
 
 setInterval(updateTime, 1000);
-var spojeni;
+
 tConnect();
 </script>
 
@@ -73,7 +81,7 @@ var menu = Titanium.UI.createMenu();
 </script>
 
 <script>
-Titanium.UI.addTray("./n0.png")
+Titanium.UI.addTray("./n0M.png")
 var globalObject;
 var pyText = "";
 
@@ -124,6 +132,17 @@ function presmeruj()
 {
   window.location.href="http://google.com";
 }
+
+var pocetpismenek=0;
+
+function pocetZnaku(kde)
+{
+// spocita pocet znaku v textarea
+//   pocetpismenek ++;
+  window.document.getElementById('pocet').innerHTML = window.document.getElementById(kde).value.length;
+  
+}
+
 </script>
 <!--<script>
     alert("ahoj");
@@ -134,6 +153,12 @@ function presmeruj()
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <p OnClick="twink()">TWINK</p>
 <a href="./zpet.html">ZPET</a>
+<form action="javascript:posliStatusPy(spojeni)" method="get">
+  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="2" cols="20">
+  </textarea>
+  <input type="submit" value="Submit" />
+</form>
+<span id = "pocet">  </span>
 <div id="time" style="padding:10px">Welcome to Titanium</div>
 <div id="timeLine" style="padding:10px">TimeLine</div>
 

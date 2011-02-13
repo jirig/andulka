@@ -80,7 +80,8 @@ class OAuthApi():
 
         if http_method == "POST":
             encoded_post_data = req.to_postdata()
-            url = req.get_normalized_http_url()
+            #url = req.get_normalized_http_url()
+            url = req.url()
         else:
             url = req.to_url()
             encoded_post_data = ""
