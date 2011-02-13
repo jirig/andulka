@@ -21,7 +21,8 @@ def tConnectPy():
 
 
 def tFavsPy(spojeni):
-  document.write("<p>"+twcm.vypis(spojeni)+"</p>")
+
+  window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni)
 
 </script>
 <script>
@@ -129,11 +130,12 @@ function presmeruj()
 </script>-->
 <h1 OnClick="pageloads()">XXX</h1>
 <script>tConnect()</script>
-<h2><a href="#" OnClick = "tFavsPy(spojeni)" >Get TimeLine</h2>
+<h2><a href="#" OnClick = "tFavsPy(spojeni)" >Get TimeLine</a></h2>
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <p OnClick="twink()">TWINK</p>
 <a href="./zpet.html">ZPET</a>
 <div id="time" style="padding:10px">Welcome to Titanium</div>
+<div id="timeLine" style="padding:10px">TimeLine</div>
 
 </body>
 </html>
