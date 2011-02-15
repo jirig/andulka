@@ -23,6 +23,7 @@ import urllib2
 import urlparse
 import time
 
+
 # Non library modules
 import simplejson
 import oauth2 as oauth
@@ -43,6 +44,11 @@ class OAuthApi():
         self._Consumer = oauth.Consumer(consumer_key, consumer_secret)
         self._signature_method = oauth.SignatureMethod_HMAC_SHA1()
         self._access_token = token 
+    
+    def _encode(self, text):
+      text = urllib.quote(str(text), '')
+      text = text.replace("+", "%20").replace("(", "%28").replace(")", "%29").replace("$", "%24").replace("!", "%21").replace("*", "%2A").replace("'", "%27").replace("%7E", "~");
+      return text
 
     def _GetOpener(self):
         opener = urllib2.build_opener()
@@ -68,10 +74,10 @@ class OAuthApi():
           A string containing the body of the response.
         '''
         # Build the extra parameters dict
-        extra_params = {}
+        extra_params = {} 
         if parameters:
           extra_params.update(parameters)
-        
+       
         req = self._makeOAuthRequest(url, params=extra_params, 
                                                     http_method=http_method)
         
@@ -81,7 +87,11 @@ class OAuthApi():
         if http_method == "POST":
             encoded_post_data = req.to_postdata()
             #url = req.get_normalized_http_url()
-            url = req.url()
+#            url = urllib.urlencode(dict([(k, self._encode(v)) for k, v in parameters.items()]))
+#            url = req.normalized_url()
+
+
+
         else:
             url = req.to_url()
             encoded_post_data = ""
@@ -122,6 +132,7 @@ class OAuthApi():
         
         if not token:
             token = self._access_token
+        
         request = oauth.Request(method=http_method,url=url,parameters=params)
         request.sign_request(self._signature_method, self._Consumer, token)
         return request
@@ -276,6 +287,12 @@ class OAuthApi():
           Whether or not the status update suceeded
     	'''
     	options['status'] = status
+#    	options['status'] = status.encode('utf-8')
+    	#options['input_encoding'] = "utf-8"
+        
+#    	options= {'status':status ,'input_encoding':'utf-8'}
+#        options= {'status':(urllib.quote(status))}
+#        options= (urllib.urlencode({'status':status}))
     	self.ApiCall("statuses/update", "POST", options)    
     
     def ApiCall(self, call, type="GET", parameters={}):

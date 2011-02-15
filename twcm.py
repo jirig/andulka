@@ -29,7 +29,7 @@ def test():
   print "=====================SPOJENO"
   return twitter
   
-def publishStatus(twitter, text):
+def publishStatus(twitter, text, input_encoding='utf8'):
   twitter.UpdateStatus(text)
   
   
