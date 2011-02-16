@@ -12,21 +12,23 @@ var spojeni;
 
 <script type="text/python">
 import twcm
-def twinky():
-  j = twcm.test()
-  return j
 
 def my_py_test2():   
      return ("PR0N")
 
 def tConnectPy():
   print "Spojuji------"
-  return twcm.test()
+  return twcm.connectToTw()
 
 
-def tFavsPy(spojeni):
+def tVypisPy(spojeni, co):
 
-  window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni)
+  if(co == "search"):
+     query = window.document.getElementById('searchInput').value;
+     window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
+  
+  else:
+    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co)
 
 def posliStatusPy(spojeni, id):
   text = window.document.getElementById('statusArea').value;
@@ -59,8 +61,6 @@ hours + ":" +
 }
 
 setInterval(updateTime, 1000);
-
-tConnect();
 </script>
 
 
@@ -110,26 +110,6 @@ function pageloads()
 //   alert(my_python_function([1, 2, 3, 4]));
 }
 
-function twink()
-{
-//   alert(twink());
-      var YY;
-      YY = twinky()
-//       alert(YY)
-//       document.write(YY);
-      document.write("<h1>" + YY +"</h1>");
-// 	 document.write('<a href="#" onclick="history.back()">&lt;- Zpět</a> <a href="#" onclick="history.forward()">Vpřed</a>');       
-}
-
-function tConnect()
-{
-  
-  spojeni = tConnectPy()
-//   tFavsPy(spojeni)
-//   document.write("<h1>" + tFavsPy(spojeni) + "</h1>")
-//   document.write("<h1>" + tFavsPy(spojeni) + "</h1>");
-}
-
 function presmeruj()
 {
   window.location.href="http://google.com";
@@ -155,14 +135,18 @@ function vycisti(id)
     alert("ahoj");
 </script>-->
 <h1 OnClick="pageloads()">XXX</h1>
-<script>tConnect()</script>
-<h2><a href="#" OnClick = "tFavsPy(spojeni)" >Get TimeLine</a></h2>
+<script>spojeni = tConnectPy()</script>
+<h2><a href="#" OnClick = "tVypisPy(spojeni,'timeline')" >Get TimeLine</a></h2>
+<h2><a href="#" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a></h2>
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
-<p OnClick="twink()">TWINK</p>
 <a href="./zpet.html">ZPET</a>
 <form action="javascript:posliStatusPy(spojeni, 'statusArea')"  method="get">
   <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="2" cols="20">
   </textarea>
+  <input type="submit" value="Submit" />
+</form>
+<form action="javascript:tVypisPy(spojeni, 'search')" method="get">
+  <input id = "searchInput" />
   <input type="submit" value="Submit" />
 </form>
 <span id = "pocet">  </span>

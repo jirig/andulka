@@ -313,24 +313,10 @@ class OAuthApi():
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------       
 #------------------------------------------------------------------------------       
-    def GetUserFavs(self, options={}):
-    	'''Get the user timeline. These are tweets just by a user, and do not contain retweets
-    	
-          Args:
-          options:
-          	A dict of options for the statuses/user_timeline call.
-          	See the link below for what options can be passed
-          	http://apiwiki.twitter.com/Twitter-REST-API-Method%3A-statuses-user_timeline
-          	
-          Return: The home timeline in dict format	
-    	'''
-    	options={'rpp':'35','page':'2'}
-    	return self.ApiCall("favorites", "GET", options)    
-    	
     def GetAllUsersFavs(self, options={}):
-    	'''Get the user timeline. These are tweets just by a user, and do not contain retweets
+    	'''Get the user favorites.
     	
-          Args:
+          Args: 
           options:
           	A dict of options for the statuses/user_timeline call.
           	See the link below for what options can be passed
@@ -338,8 +324,9 @@ class OAuthApi():
           	
           Return: The home timeline in dict format	
     	'''
+
     	tmplist = []
-    	for n in range(1,10):
+    	for n in range(1,1000):
 	  options = {'page':n}
 	  appendix = self.ApiCall("favorites", "GET", options)
 	  if appendix != []:
@@ -350,7 +337,15 @@ class OAuthApi():
     	#options={'rpp':'35','page':'2'}
     	#return self.ApiCall("favorites", "GET", options) 
     	return tmplist
+
+    def GetSearchResult(self, search, options={}):
+
+#        TODO: 1) omezeni na 140 znaku
+#
+        options = {'q' : search}
+        json =  self._FetchUrl("http://search.twitter.com/search.json", "get", options)
+        return simplejson.loads(json)
+#        self.ApiCall("statuses/update", "POST", options)
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------       
-#------------------------------------------------------------------------------       
-      
+#------------------------------------------------------------------------------
