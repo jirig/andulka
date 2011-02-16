@@ -24,9 +24,9 @@ def vypis(twitter, co, search = None):
   if(co == "search"):
 #        print dataList["results"][1]
         for i in range(0,len(dataList["results"])-1):
-#            try:
+            try:
                 a += "<b>"+dataList["results"][i]['from_user']+ "</b>" + "<br />" + ((dataList["results"][i]['text'])) + "<br />"
-#            except:
+            except:
 #                a = "<b> Žádný výsledek nebyl nalezen</b>"
 
   else:
