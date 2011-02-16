@@ -2,6 +2,7 @@
 <html lang="cs">
 <head>
  <meta charset="utf-8" />
+ <title>Andulka - adaptivní twitter klient </title>
 </head>
 
 <body>
@@ -27,9 +28,10 @@ def tFavsPy(spojeni):
 
   window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni)
 
-def posliStatusPy(spojeni):
+def posliStatusPy(spojeni, id):
   text = window.document.getElementById('statusArea').value;
   twcm.publishStatus(spojeni, text);
+  window.document.getElementById(id).value = ""
   alert("odeslano");
   
 </script>
@@ -143,6 +145,11 @@ function pocetZnaku(kde)
   
 }
 
+function vycisti(id)
+{
+   window.document.getElementById(id).value = ""
+}
+
 </script>
 <!--<script>
     alert("ahoj");
@@ -153,7 +160,7 @@ function pocetZnaku(kde)
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <p OnClick="twink()">TWINK</p>
 <a href="./zpet.html">ZPET</a>
-<form action="javascript:posliStatusPy(spojeni)" method="get">
+<form action="javascript:posliStatusPy(spojeni, 'statusArea')"  method="get">
   <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="2" cols="20">
   </textarea>
   <input type="submit" value="Submit" />
