@@ -45,7 +45,14 @@ function init(){
                     "band": "Jerome Dillon",
                     "relation": "member of band"
                 },
-                "children": []
+                "children": [{
+                "id": "232_42",
+                "name": "KUCHTA Band",
+                "data": {
+                    "band": "Spek Slanina",
+                    "relation": "Kuchta"
+                },
+                "children": []}]
             }, {
                 "id": "324134_3",
                 "name": "nearLY",

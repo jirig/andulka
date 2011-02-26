@@ -35,7 +35,12 @@ def posliStatusPy(spojeni, id):
   twcm.publishStatus(spojeni, text);
   window.document.getElementById(id).value = ""
   alert("odeslano");
-  
+
+def otevriOdkazPy(link):
+    twcm.browserOpen(link)
+    
+
+
 </script>
 <script>
 function updateTime()
@@ -50,17 +55,11 @@ var minutes = now.getMinutes();
 
 var seconds = now.getSeconds();
 
-window.document.getElementById('time').innerHTML =
-
-hours + ":" +
-
-(minutes<10?"0" +minutes:minutes) + ":" +
-
-(seconds<10?"0" + seconds:seconds);
+window.document.getElementById('time').innerHTML = hours + ":" + (minutes<10?"0" +minutes:minutes) + ":" + (seconds<10?"0" + seconds:seconds);
 
 }
 
-setInterval(updateTime, 1000);
+
 </script>
 
 
@@ -122,17 +121,23 @@ function vycisti(id)
 {
    window.document.getElementById(id).value = ""
 }
-
+function otevriOdkaz(link)
+{
+    Titanium.Platform.openURL(link)
+}
 </script>
 
 <h1>Ahoj</h1>
-<script>spojeni = tConnectPy()</script>
+<script> 
+    setInterval(updateTime, 1000);
+    spojeni = tConnectPy();
+</script>
 <h2><a href="#" OnClick = "tVypisPy(spojeni,'timeline')" >Get TimeLine</a></h2>
 <h2><a href="#" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a></h2>
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <a href="./zpet.html">ZPET</a>
 <form action="javascript:posliStatusPy(spojeni, 'statusArea')"  method="get">
-  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="2" cols="20">
+  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="2" cols="70">
   </textarea>
   <input type="submit" value="Submit" />
 </form>

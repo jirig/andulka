@@ -5,6 +5,9 @@ def test():
 # -*- coding: utf-8 -*-
 from oauthtwitter import OAuthApi
 import pprint
+import re
+import subprocess
+
 OATOKEN="111682467-nymKCZGQxijr3a8U4keoiHCArRnkLqYiHjE8QwoE"
 OATOKENSECRET= "uSELZWESpSikb3Z0w8t3TGkByrlvW3kInpK7XNdV94"
 consumer_key = "qkhPVwSDfFp9qUr9KlVdPA"
@@ -21,19 +24,24 @@ def vypis(twitter, co, search = None):
      dataList = twitter.GetSearchResult(search)
   a = ""
 
+#vypis pro vysledky hledani
   if(co == "search"):
 #        print dataList["results"][1]
         for i in range(0,len(dataList["results"])-1):
             try:
-                a += "<b>"+dataList["results"][i]['from_user']+ "</b>" + "<br />" + ((dataList["results"][i]['text'])) + "<br />"
+                a += "div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br /></div>"
             except:
                 a = "<b> Žádný výsledek nebyl nalezen</b>"
+#  vypis statusu krom vyhledavani
   else:
       for i in range(0,len(dataList)-1):
-        try:
-            a += "<b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br />"
-        except:
-            a = "<b> Žádný výsledek nebyl nalezen</b>"
+#        try:
+            text=""
+            text = replaceUrl(dataList[i]['text'])
+            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
+#            a += "<div class='statusDiv'><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
+#        except:
+#            a = "<b> Žádný výsledek nebyl nalezen</b>"
 
     #print(dataList[i]['user']['screen_name'])
     #print(dataList[i]['text']) 
@@ -50,7 +58,20 @@ def connectToTw():
   
 def publishStatus(twitter, text, input_encoding='utf8'):
   twitter.UpdateStatus(text)
-  
+
+def replaceUrl(text):
+    """ nahradi vsechny odkazy v "text" za aktivni """
+    for word in text.split(" "):
+        m = re.match(r"(http://.+)", word)
+        if (m):
+#            print "ahoj "+m.group(1)
+#            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
+             text = text.replace(word,'<a href="#" onClick="otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
+            
+    return text
+
+def browserOpen(link):
+    subprocess.Popen(["x-www-browser"],True)
   
   
   #user_timeline = twitter.GetUserTimeline()
