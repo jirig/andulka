@@ -346,6 +346,11 @@ class OAuthApi():
         json =  self._FetchUrl("http://search.twitter.com/search.json", "get", options)
         return simplejson.loads(json)
 #        self.ApiCall("statuses/update", "POST", options)
+
+    def CreateFav(self, statusid):
+        print "YEAAA"
+        self.ApiCall("favorites/create/"+statusid, "POST")
+        return
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------       
 #------------------------------------------------------------------------------

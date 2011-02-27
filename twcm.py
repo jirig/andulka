@@ -38,7 +38,8 @@ def vypis(twitter, co, search = None):
 #        try:
             text=""
             text = replaceUrl(dataList[i]['text'])
-            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
+            statusid = dataList[i]['id_str']
+            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a></span></div>"
 #            a += "<div class='statusDiv'><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
 #        except:
 #            a = "<b> Žádný výsledek nebyl nalezen</b>"
@@ -73,7 +74,9 @@ def replaceUrl(text):
 def browserOpen(link):
     subprocess.Popen(["x-www-browser"],True)
   
-  
+def newFav(twitter, statusid):
+    twitter.CreateFav(statusid)
+    return
   #user_timeline = twitter.GetUserTimeline()
   #user_timeline = twitter.GetAllUsersFavs()
   #return vypis(user_timeline)

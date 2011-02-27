@@ -39,7 +39,10 @@ def posliStatusPy(spojeni, id):
 def otevriOdkazPy(link):
     twcm.browserOpen(link)
     
-
+def newFavPy(spojeni, statusid):
+    twcm.newFav(spojeni, statusid)
+    print "FAV +"
+    return
 
 </script>
 <script>
@@ -137,7 +140,7 @@ function otevriOdkaz(link)
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <a href="./zpet.html">ZPET</a>
 <form action="javascript:posliStatusPy(spojeni, 'statusArea')"  method="get">
-  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="2" cols="70">
+  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28">
   </textarea>
   <input type="submit" value="Submit" />
 </form>
