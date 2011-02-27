@@ -39,7 +39,11 @@ def vypis(twitter, co, search = None):
             text=""
             text = replaceUrl(dataList[i]['text'])
             statusid = dataList[i]['id_str']
-            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a></span></div>"
+            if(co=="myFavs"):
+                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+            else:
+                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a></span></div>"
+            
 #            a += "<div class='statusDiv'><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
 #        except:
 #            a = "<b> Žádný výsledek nebyl nalezen</b>"
@@ -76,6 +80,9 @@ def browserOpen(link):
   
 def newFav(twitter, statusid):
     twitter.CreateFav(statusid)
+    return
+def unFav(twitter, statusid):
+    twitter.DestroyFav(statusid)
     return
   #user_timeline = twitter.GetUserTimeline()
   #user_timeline = twitter.GetAllUsersFavs()

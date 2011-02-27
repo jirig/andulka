@@ -351,6 +351,10 @@ class OAuthApi():
         print "YEAAA"
         self.ApiCall("favorites/create/"+statusid, "POST")
         return
+    def DestroyFav(self, statusid):
+        print "YEAAA"
+        self.ApiCall("favorites/destroy/"+statusid, "POST")
+        return
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------       
 #------------------------------------------------------------------------------
