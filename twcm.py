@@ -61,7 +61,7 @@ def connectToTw():
   print "=====================SPOJENO"
   return twitter
   
-def publishStatus(twitter, text, input_encoding='utf8'):
+def publishStatus(twitter, text, statusid = None, input_encoding='utf8'):
   twitter.UpdateStatus(text)
 
 def replaceUrl(text):
@@ -71,7 +71,7 @@ def replaceUrl(text):
         if (m):
 #            print "ahoj "+m.group(1)
 #            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
-             text = text.replace(word,'<a href="#" onClick="otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
+             text = text.replace(word,'<a href="#" onclick="Titanium.Desktop.openURL(\''+m.group(1)+'\');">'+m.group(1)+'</a>')
             
     return text
 
@@ -83,6 +83,10 @@ def newFav(twitter, statusid):
     return
 def unFav(twitter, statusid):
     twitter.DestroyFav(statusid)
+    return
+
+def reply(twitter):
+#    twitter.updateStatus()
     return
   #user_timeline = twitter.GetUserTimeline()
   #user_timeline = twitter.GetAllUsersFavs()

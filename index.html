@@ -13,9 +13,6 @@ var spojeni;
 <script type="text/python">
 import twcm
 
-def my_py_test2():   
-     return ("PR0N")
-
 def tConnectPy():
   print "Spojuji------"
   return twcm.connectToTw()
@@ -46,6 +43,11 @@ def newFavPy(spojeni, statusid):
 def unFavPy(spojeni, statusid):
     twcm.unFav(spojeni, statusid)
     print "FAV +"
+    return
+
+def replyPy(spojeni, statusid):
+    twcm.reply(spojeni, statusid)
+    print "REPLYYYYYY +"
     return
 
 </script>
@@ -89,7 +91,47 @@ var menu = Titanium.UI.createMenu();
 </script>
 
 <script>
-Titanium.UI.addTray("./n0M.png")
+//Titanium.UI.addTray("./n0M.png")
+//var mWindow = Titanium.UI.getCurrentWindow();
+var tray = Titanium.UI.addTray(iconURL="./n0M.png", function(){
+  //mWindow.show();
+   var mWindow = Titanium.UI.getCurrentWindow();
+   if(mWindow.isVisible()){
+     mWindow.setVisible(false);
+   }
+   else{
+     
+     mWindow.setVisible(true);
+     mWindow.focus();
+   }
+
+     //window.showInspector();
+     //window.height = 100;
+      
+});
+
+//tray.addTray("./n0M.png")
+tray.setHint("Andulka");
+var trayMenu = Titanium.UI.createMenu();
+tray.setMenu(trayMenu);
+
+var quit = Titanium.UI.createMenuItem("Quit", function(){
+    Titanium.App.exit();
+});
+trayMenu.appendItem(quit);
+var showW = Titanium.UI.createMenuItem("Show", function(){
+ //var myWindow = Titanium.UI.getMainWindow();
+ //myWindow.show();
+ //Titanium.UI.getCurrentWindow().show();
+});
+trayMenu.appendItem(showW);
+//Titanium.UI.UserWindow.setTransparency(50)
+//var notif = Titanium.Notification.createNotification(Titanium.UI.createWindow());
+//notif.setTitle("New message");
+//notif.setMessage("How are you doing?");
+//notif.setTimeout(5)
+//notif.show();
+
 var globalObject;
 var pyText = "";
 
@@ -120,7 +162,7 @@ function pocetZnaku(kde)
 {
 // spocita pocet znaku v textarea
 //   pocetpismenek ++;
-  window.document.getElementById('pocet').innerHTML = window.document.getElementById(kde).value.length;
+  window.document.getElementById('pocet').innerHTML =140 - window.document.getElementById(kde).value.length;
   
 }
 
@@ -130,7 +172,7 @@ function vycisti(id)
 }
 function otevriOdkaz(link)
 {
-    Titanium.Platform.openURL(link)
+    Titanium.Platform.openURL(link);
 }
 </script>
 
@@ -144,8 +186,7 @@ function otevriOdkaz(link)
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <a href="./zpet.html">ZPET</a>
 <form action="javascript:posliStatusPy(spojeni, 'statusArea')"  method="get">
-  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28">
-  </textarea>
+  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea>
   <input type="submit" value="Submit" />
 </form>
 <form action="javascript:tVypisPy(spojeni, 'search')" method="get">
