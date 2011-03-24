@@ -42,7 +42,7 @@ def vypis(twitter, co, search = None):
             if(co=="myFavs"):
                 a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
             else:
-                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a></span></div>"
+                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> | Reply | </a><a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a></span></div>"
             
 #            a += "<div class='statusDiv'><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
 #        except:
@@ -61,8 +61,12 @@ def connectToTw():
   print "=====================SPOJENO"
   return twitter
   
-def publishStatus(twitter, text, statusid = None, input_encoding='utf8'):
-  twitter.UpdateStatus(text)
+def publishStatus(twitter, text, statusID = None, input_encoding='utf8'):
+#  twitter.UpdateStatus(text)
+    if(statusID):
+        twitter.UpdateStatus(text, options = {'in_reply_to_status_id':statusID})
+    else:
+     twitter.UpdateStatus(text)
 
 def replaceUrl(text):
     """ nahradi vsechny odkazy v "text" za aktivni """

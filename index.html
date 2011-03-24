@@ -8,6 +8,7 @@
 <body>
 <script>
 var spojeni;
+var replyStatusID = 0;
 </script>
 
 <script type="text/python">
@@ -27,11 +28,18 @@ def tVypisPy(spojeni, co):
   else:
     window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co)
 
-def posliStatusPy(spojeni, id):
-  text = window.document.getElementById('statusArea').value;
-  twcm.publishStatus(spojeni, text);
-  window.document.getElementById(id).value = ""
-  alert("odeslano");
+def posliStatusPy(spojeni, replyStatusID):
+    #try:
+      text = window.document.getElementById('statusArea').value;
+      if(replyStatusID):
+        twcm.publishStatus(spojeni, text, statusID = replyStatusID);
+        replyStatusID = 0;
+      else:
+        twcm.publishStatus(spojeni, text);
+      window.document.getElementById('statusArea').value = ""
+      alert("odeslano");
+    #except:
+     #  alert("odeslani selhalo");
 
 def otevriOdkazPy(link):
     twcm.browserOpen(link)
@@ -45,10 +53,6 @@ def unFavPy(spojeni, statusid):
     print "FAV +"
     return
 
-def replyPy(spojeni, statusid):
-    twcm.reply(spojeni, statusid)
-    print "REPLYYYYYY +"
-    return
 
 </script>
 <script>
@@ -74,25 +78,18 @@ window.document.getElementById('time').innerHTML = hours + ":" + (minutes<10?"0"
 
 
 <script>
+// Nastaveni okna aplikace / Titanium
+
 var menu = Titanium.UI.createMenu();
     var file = Titanium.UI.createMenuItem("File");
     file.addItem("Quit",function() {
 	Titanium.App.exit();
      },"./n0M.png");
-//     file.addEventListener(Titanium.CLICKED, function(event)
-//     {
-//         alert("Help activated");
-//     });
-//     ahoj = Titanium.UI.MenuItem.addItem("ahoj");
-//     menu.appendItem(ahoj);
     file.addSeparatorItem();
     menu.appendItem(file);
     Titanium.UI.setMenu(menu);
-</script>
 
-<script>
-//Titanium.UI.addTray("./n0M.png")
-//var mWindow = Titanium.UI.getCurrentWindow();
+// Tray ikonka a menu
 var tray = Titanium.UI.addTray(iconURL="./n0M.png", function(){
   //mWindow.show();
    var mWindow = Titanium.UI.getCurrentWindow();
@@ -104,13 +101,9 @@ var tray = Titanium.UI.addTray(iconURL="./n0M.png", function(){
      mWindow.setVisible(true);
      mWindow.focus();
    }
-
-     //window.showInspector();
-     //window.height = 100;
-      
+     //window.showInspector();      
 });
-
-//tray.addTray("./n0M.png")
+// Tooltip pro ikonku
 tray.setHint("Andulka");
 var trayMenu = Titanium.UI.createMenu();
 tray.setMenu(trayMenu);
@@ -120,11 +113,13 @@ var quit = Titanium.UI.createMenuItem("Quit", function(){
 });
 trayMenu.appendItem(quit);
 var showW = Titanium.UI.createMenuItem("Show", function(){
- //var myWindow = Titanium.UI.getMainWindow();
- //myWindow.show();
- //Titanium.UI.getCurrentWindow().show();
+     var mWindow = Titanium.UI.getCurrentWindow();
+     mWindow.setVisible(true);
+     mWindow.focus();
 });
 trayMenu.appendItem(showW);
+// 
+// notifikace
 //Titanium.UI.UserWindow.setTransparency(50)
 //var notif = Titanium.Notification.createNotification(Titanium.UI.createWindow());
 //notif.setTitle("New message");
@@ -133,8 +128,6 @@ trayMenu.appendItem(showW);
 //notif.show();
 
 var globalObject;
-var pyText = "";
-
 Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
     {
             alert("Got page initialized event!");
@@ -143,13 +136,6 @@ Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
 
 
 <script>
-function pageloads()
-{
-  var f;
-  zapis = "AHOJDA";
-   pyText = my_py_test2()
-   alert(pyText)
-}
 
 function presmeruj()
 {
@@ -174,6 +160,13 @@ function otevriOdkaz(link)
 {
     Titanium.Platform.openURL(link);
 }
+
+function reply(spojeni,sName, sID){
+    area = window.document.getElementById("statusArea");
+    area.innerHTML = "@" + sName + " ";
+    replyStatusID = sID
+}
+
 </script>
 
 <h1>Ahoj</h1>
@@ -185,7 +178,7 @@ function otevriOdkaz(link)
 <h2><a href="#" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a></h2>
 <a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
 <a href="./zpet.html">ZPET</a>
-<form action="javascript:posliStatusPy(spojeni, 'statusArea')"  method="get">
+<form action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
   <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea>
   <input type="submit" value="Submit" />
 </form>
