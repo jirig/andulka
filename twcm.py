@@ -7,6 +7,7 @@ from oauthtwitter import OAuthApi
 import pprint
 import re
 import subprocess
+import simplejson
 
 OATOKEN="111682467-nymKCZGQxijr3a8U4keoiHCArRnkLqYiHjE8QwoE"
 OATOKENSECRET= "uSELZWESpSikb3Z0w8t3TGkByrlvW3kInpK7XNdV94"
@@ -22,8 +23,10 @@ def vypis(twitter, co, search = None):
 #    dataList =  twitter.GetConcretUserFavs()
   elif(co == "search"):
      dataList = twitter.GetSearchResult(search)
+#  pomocna promenna pro ulozeni a vypis statusu
   a = ""
-
+  # pomocna promenna pro slozeni json dat pro vyzualizaci pomoci thejit
+ 
 #vypis pro vysledky hledani
   if(co == "search"):
 #        print dataList["results"][1]
@@ -43,7 +46,7 @@ def vypis(twitter, co, search = None):
                 a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
             else:
                 a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> | Reply | </a><a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a></span></div>"
-            
+               
 #            a += "<div class='statusDiv'><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
 #        except:
 #            a = "<b> Žádný výsledek nebyl nalezen</b>"
@@ -53,6 +56,32 @@ def vypis(twitter, co, search = None):
     #print a
     
   return a
+
+def vizData():
+
+    jsn ={"id": "stred00", "name": "stred","data": { "some key": "some value", "some other key": "some other value"},"children": [ {"id": "232_42", "name": "KUCHTA Band", "data": { "tsomekey":"twitter je nununu","image":"n0M.png"},"children": []}]}
+#    return simplejson.dumps(jsn)
+    return jsn
+#    jsn = "..."
+#     print jsn
+#    jsn= """{
+#  "id": "aUniqueIdentifier",
+#  "name": "usually a nodes name",
+#  "data": {
+#    "some key": "some value",
+#    "some other key": "some other value"
+#   },
+#  "children": [ {
+#                "id": "232_42",
+#                "name": "KUCHTA Band",
+#                "data": {
+#                    "tsomekey":"twitter je nununu",
+#                    "image":"n0M.png"
+#                },
+#                "children": []}]
+#}"""
+    
+#return jsn
 
 def connectToTw():
   twitter = OAuthApi(consumer_key, consumer_secret)

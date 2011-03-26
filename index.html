@@ -3,6 +3,15 @@
 <head>
  <meta charset="utf-8" />
  <title>Andulka - adaptivní twitter klient </title>
+ <link type="text/css" href="./viz/base.css" rel="stylesheet" />
+ <link type="text/css" href="./viz/Hypertree.css" rel="stylesheet" />
+ <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
+
+<!-- JIT Library File -->
+<script language="javascript" type="text/javascript" src="./js/Jit/jit.js"></script>
+
+<!-- Example File -->
+<script language="javascript" type="text/javascript" src="./viz/ex1.js"></script>
 </head>
 
 <body>
@@ -53,6 +62,9 @@ def unFavPy(spojeni, statusid):
     print "FAV +"
     return
 
+def vizPy():
+    jsn = twcm.vizData()    
+    return jsn
 
 </script>
 <script>
@@ -167,12 +179,17 @@ function reply(spojeni,sName, sID){
     replyStatusID = sID
 }
 
+function vizualizuj(){
+    jsn = vizPy();
+    //alert(jsn);
+    init(jsn);
+}
 </script>
 
 <h1>Ahoj</h1>
 <script> 
     setInterval(updateTime, 1000);
-    spojeni = tConnectPy();
+   // spojeni = tConnectPy();
 </script>
 <h2><a href="#" OnClick = "tVypisPy(spojeni,'timeline')" >Get TimeLine</a></h2>
 <h2><a href="#" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a></h2>
@@ -189,6 +206,42 @@ function reply(spojeni,sName, sID){
 <span id = "pocet">  </span>
 <div id="time" style="padding:10px">Welcome to Titanium</div>
 <div id="timeLine" style="padding:10px">TimeLine</div>
+
+<!--vizualizace-->
+<a href="#" onclick = "vizualizuj();"> VIZZZZ </a>
+<!--<div id="vizual"  onload="init();">-->
+<div id="vizual">
+    <div id="container">
+        <div id="left-container">
+
+
+
+        <div class="text">
+        <h4>
+Tree Animation
+        </h4>
+
+            A static JSON Tree structure is used as input for this animation.<br /><br />
+            Clicking on a node should move the tree and center that node.<br /><br />
+            The centered node's children are displayed in a relations list in the right column.
+
+        </div>
+</div>
+        <div id="id-list"></div>
+
+
+<div style="text-align:center;"><a href="ex1.js">See the Example Code</a></div>      
+    <div id="center-container">
+        <div id="infovis"></div>
+    </div>
+        <div id="right-container">
+
+            <div id="inner-details"></div>
+
+        </div>
+        <div id="log"></div>
+    </div>
+</div>
 
 </body>
 </html>
