@@ -62,8 +62,8 @@ def unFavPy(spojeni, statusid):
     print "FAV +"
     return
 
-def vizPy():
-    jsn = twcm.vizData()    
+def vizPy(spojeni):
+    jsn = twcm.vizData(spojeni)
     return jsn
 
 </script>
@@ -180,8 +180,11 @@ function reply(spojeni,sName, sID){
 }
 
 function vizualizuj(){
-    jsn = vizPy();
+    jsn = vizPy(spojeni);
     //alert(jsn);
+    area = window.document.getElementById("jsn_vypis");
+    area.innerHTML = jsn;
+
     init(jsn);
 }
 </script>
@@ -189,7 +192,7 @@ function vizualizuj(){
 <h1>Ahoj</h1>
 <script> 
     setInterval(updateTime, 1000);
-   // spojeni = tConnectPy();
+    spojeni = tConnectPy();
 </script>
 <h2><a href="#" OnClick = "tVypisPy(spojeni,'timeline')" >Get TimeLine</a></h2>
 <h2><a href="#" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a></h2>
@@ -208,8 +211,9 @@ function vizualizuj(){
 <div id="timeLine" style="padding:10px">TimeLine</div>
 
 <!--vizualizace-->
-<a href="#" onclick = "vizualizuj();"> VIZZZZ </a>
+<a href="#" onclick = "vizualizuj(spojeni);"> VIZZZZ </a>
 <!--<div id="vizual"  onload="init();">-->
+<div id="jsn_vypis"></div>
 <div id="vizual">
     <div id="container">
         <div id="left-container">
