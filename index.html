@@ -5,6 +5,7 @@
  <title>Andulka - adaptivní twitter klient </title>
  <link type="text/css" href="./viz/base.css" rel="stylesheet" />
  <link type="text/css" href="./viz/Hypertree.css" rel="stylesheet" />
+ <link type="text/css" href="./gui.css" rel="stylesheet" />
  <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
@@ -15,11 +16,12 @@
 </head>
 
 <body>
+<div id="centr">
 <script>
 var spojeni;
 var replyStatusID = 0;
 </script>
-
+<!--python fce-->
 <script type="text/python">
 import twcm
 
@@ -47,6 +49,7 @@ def posliStatusPy(spojeni, replyStatusID):
         twcm.publishStatus(spojeni, text);
       window.document.getElementById('statusArea').value = ""
       alert("odeslano");
+      window.document.getElementById('pocet').innerHTML =140
     #except:
      #  alert("odeslani selhalo");
 
@@ -88,7 +91,7 @@ window.document.getElementById('time').innerHTML = hours + ":" + (minutes<10?"0"
 </script>
 
 
-
+<!--Titanium-->
 <script>
 // Nastaveni okna aplikace / Titanium
 
@@ -146,7 +149,7 @@ Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
     });
 </script>
 
-
+<!--javascript-->
 <script>
 
 function presmeruj()
@@ -182,36 +185,48 @@ function reply(spojeni,sName, sID){
 function vizualizuj(){
     jsn = vizPy(spojeni);
     //alert(jsn);
-    area = window.document.getElementById("jsn_vypis");
-    area.innerHTML = jsn;
+    //window.document.getElementById("jsn_vypis").innerHTML = jsn;
 
     init(jsn);
 }
 </script>
 
-<h1>Ahoj</h1>
+<!--<h1>Ahoj</h1>-->
 <script> 
     setInterval(updateTime, 1000);
     spojeni = tConnectPy();
 </script>
-<h2><a href="#" OnClick = "tVypisPy(spojeni,'timeline')" >Get TimeLine</a></h2>
-<h2><a href="#" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a></h2>
-<a href="./js/Jit/Examples/Hypertree/example1.html">TM</a>
-<a href="./zpet.html">ZPET</a>
+<div class="navigace">
+ | <a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |
+<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |
+<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |
+</div>
+
+<!--<a href="./zpet.html">ZPET</a>-->
 <form action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
   <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea>
-  <input type="submit" value="Submit" />
+  <br />
+  <span id = "pocet"></span>
+  <input type="submit" value="Odeslat" />
 </form>
-<form action="javascript:tVypisPy(spojeni, 'search')" method="get">
+
+<form id="searchForm"action="javascript:tVypisPy(spojeni, 'search')" method="get">
   <input id = "searchInput" />
-  <input type="submit" value="Submit" />
+  <input type="submit" value="Vyhledat" />
 </form>
-<span id = "pocet">  </span>
+
 <div id="time" style="padding:10px">Welcome to Titanium</div>
 <div id="timeLine" style="padding:10px">TimeLine</div>
 
+
+<div class="statusDiv"> <img src="./n0M.png" />
+    A static JSON Tree structure is used as input for this animation.
+            Clicking on a node should move the tree and center that node.
+            The centered node's children are displayed in a relations list in the right column.
+</div>
+
 <!--vizualizace-->
-<a href="#" onclick = "vizualizuj(spojeni);"> VIZZZZ </a>
+<!--<a href="#" onclick = "vizualizuj(spojeni);"> VIZZZZ </a>-->
 <!--<div id="vizual"  onload="init();">-->
 <div id="jsn_vypis"></div>
 <div id="vizual">
@@ -246,6 +261,6 @@ Tree Animation
         <div id="log"></div>
     </div>
 </div>
-
+</div>  <!--centrovaci div-->
 </body>
 </html>

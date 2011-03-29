@@ -41,7 +41,7 @@ def vypis(twitter, co, search = None):
       for i in range(0,len(dataList)-1):
 #        try:
             text=""
-            text = replaceUrl(dataList[i]['text'])
+            text = replaceUrl(dataList[i]['text'],0)
             statusid = dataList[i]['id_str']
             if(co=="myFavs"):
                 a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
@@ -74,16 +74,19 @@ def vizData(twitter):
 #        try:
             text='...'
 #            text = replaceUrl(dataList[i]['text'])
+#            text = dataList[i]['text'].replace('"', '\\"')
             text = dataList[i]['text'].replace('"', '\'')
             text = text.replace('\\', '\\\\')
-#            text = replaceUrl(text)
+            text = text.replace('\n', " ")
+            
+            text = replaceUrl(text,1)
             statusid = dataList[i]['id_str']
 #            text = simplejson.JSONEncoder().encode(text)
             sname = dataList[i]['user']['screen_name']
             imgurl = dataList[i]['user']['profile_image_url']
 #            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>  <a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
             if(i == len(dataList)-2):
-                tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey":"'+text+'", "image":"'+imgurl+'"}, "children":[]}'
+                tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey": "'+text+ "  " +' ", "image":"'+imgurl+'"}, "children":[]}'
                 print "===== POSLEDNI ======"
             else:
                 tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey":"'+text+'", "image":"'+imgurl+'"}, "children":[]},'
@@ -131,7 +134,7 @@ def publishStatus(twitter, text, statusID = None, input_encoding='utf8'):
     else:
      twitter.UpdateStatus(text)
 
-def replaceUrl(text):
+def replaceUrl(text,viz):
     """ nahradi vsechny odkazy v "text" za aktivni """
     for word in text.split(" "):
         m = re.match(r"(http://.+)", word)
@@ -139,7 +142,10 @@ def replaceUrl(text):
 #            print "ahoj "+m.group(1)
 #            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
 #             text = text.replace(word,"<a href='#' onclick='Titanium.Desktop.openURL(\'"+m.group(1)+"\');'>"+m.group(1)+"</a>")
-             text = text.replace(word,'<a href="#" onclick="Titanium.Desktop.openURL(\''+m.group(1)+'\');">'+m.group(1)+'</a>')
+           if(viz):
+               text = text.replace(word,'<a href=\\"#\\" onclick=\\"Titanium.Desktop.openURL(\''+m.group(1)+'\');\\">'+m.group(1)+'</a>')
+           else:
+               text = text.replace(word,'<a href="#" onclick="Titanium.Desktop.openURL(\''+m.group(1)+'\');">'+m.group(1)+'</a>')
               
     return text
 
