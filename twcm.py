@@ -33,7 +33,13 @@ def vypis(twitter, co, search = None):
 #        print dataList["results"][1]
         for i in range(0,len(dataList["results"])-1):
             try:
-                a += "div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br /></div>"
+                text=replaceUrl(((dataList['results'][i]['text'])),0)
+#                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br />" + ((dataList['results'][i]['created_at'])) + "<br /></div>"
+#                favorited = dataList['results'][i]['favorited'] ###NELZE###
+                statusid = dataList['results'][i]['id_str']
+#                if(favorited):
+#                    a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+ ((dataList['results'][i]['created_at'])) +"<br /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br />" + ((dataList['results'][i]['created_at'])) + "<br /></div>"
             except:
                 a = "<b> Žádný výsledek nebyl nalezen</b>"
 #  vypis statusu krom vyhledavani
@@ -43,11 +49,18 @@ def vypis(twitter, co, search = None):
             text=""
             text = replaceUrl(dataList[i]['text'],0)
             statusid = dataList[i]['id_str']
+            favorited = dataList[i]['favorited']
             if(co=="myFavs"):
                 a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+#                if(favorited):
+#                    a += '<h1>FFFUUUUUUUU</h1>'
             else:
-                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>  <a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
-
+                if(favorited):
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+                else:
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>  <a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
+                
+#                    a += '<h1>FFFUUUUUUUU</h1>'
                
 #            a += "<div class='statusDiv'><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
 #        except:

@@ -200,6 +200,13 @@ function vizualizuj(){
  | <a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |
 <a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |
 <a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |
+<form id="searchForm" action="javascript:tVypisPy(spojeni, 'search')" method="get">
+  <input id = "searchInput" size="10"/>
+  <input type="submit" id="searchSubmit" value="" />
+  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
+  <!--<img src="./img/lupa.gif"/>-->
+  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
+</form>
 </div>
 
 <!--<a href="./zpet.html">ZPET</a>-->
@@ -210,10 +217,7 @@ function vizualizuj(){
   <input type="submit" value="Odeslat" />
 </form>
 
-<form id="searchForm"action="javascript:tVypisPy(spojeni, 'search')" method="get">
-  <input id = "searchInput" />
-  <input type="submit" value="Vyhledat" />
-</form>
+
 
 <div id="time" style="padding:10px">Welcome to Titanium</div>
 <div id="timeLine" style="padding:10px">TimeLine</div>
