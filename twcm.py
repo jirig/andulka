@@ -15,9 +15,9 @@ OATOKENSECRET= "uSELZWESpSikb3Z0w8t3TGkByrlvW3kInpK7XNdV94"
 consumer_key = "qkhPVwSDfFp9qUr9KlVdPA"
 consumer_secret = "mUzfFwtes7UW854B7yW5rvb6RZE7Wy8OD5DMFrq3mCA"
 
-def vypis(twitter, co, search = None):
+def vypis(twitter, co, search = None, page = None):
   if( co == "timeline"):
-    dataList =  twitter.GetHomeTimeline()
+    dataList =  twitter.GetHomeTimeline(options = {'page':page})
   elif(co == "myFavs"):
     dataList =  twitter.GetAllUsersFavs()
 #  elif(co == "usrFavs"):

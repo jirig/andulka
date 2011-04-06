@@ -251,7 +251,21 @@ class OAuthApi():
           	
           Return: The home timeline in dict format	
     	'''
-    	return self.ApiCall("statuses/home_timeline", "GET", options)    
+        if(options["page"]==None):
+            return self.ApiCall("statuses/home_timeline", "GET", options)
+#    	return self.ApiCall("statuses/home_timeline", "GET", options)
+        else:
+            pages = options["page"]
+            tmplist = []
+            for n in range(1,pages):
+              options = {'page':n}
+              appendix = self.ApiCall("statuses/home_timeline", "GET", options)
+              if appendix != []:
+                tmplist.extend(appendix)
+
+              else:
+                break
+            return tmplist
     
     def GetUserTimeline(self, options={}):
     	'''Get the user timeline. These are tweets just by a user, and do not contain retweets

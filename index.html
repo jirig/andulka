@@ -20,6 +20,8 @@
 <script>
 var spojeni;
 var replyStatusID = 0;
+// pocet aktualne zobrazenych stranek z home_timeline
+var pageHomeCount = 1;
 </script>
 <!--python fce-->
 <script type="text/python">
@@ -37,7 +39,7 @@ def tVypisPy(spojeni, co):
      window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
   
   else:
-    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co)
+    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
 
 def posliStatusPy(spojeni, replyStatusID):
     #try:
@@ -68,6 +70,12 @@ def unFavPy(spojeni, statusid):
 def vizPy(spojeni):
     jsn = twcm.vizData(spojeni)
     return jsn
+
+def dalsiPy(spojeni, pages):
+    co = "timeline"
+   
+    window.document.getElementById('timeLine').innerHTML=twcm.vypis(spojeni, co, page = pages) + '<br /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
+
 
 </script>
 <script>
@@ -188,6 +196,11 @@ function vizualizuj(){
     //window.document.getElementById("jsn_vypis").innerHTML = jsn;
 
     init(jsn);
+}
+
+function dalsiTwity(){
+    pageHomeCount ++;
+    dalsiPy(spojeni, pageHomeCount);
 }
 </script>
 
