@@ -15,12 +15,14 @@
 <script language="javascript" type="text/javascript" src="./viz/ex1.js"></script>
 </head>
 
-<body>
+<body onload="document.getElementById('loading').style.display = 'none';">
 
 <script>
 var spojeni;
 var replyStatusID = 0;
-var ukazF = 0; // urcuje zda je formular pro tweet (ne)zobrazen
+var ukazF = 0;
+var ukazTF = 0; // urcuje zda je formular pro tweet (ne)zobrazen
+var ukazSF = 0;
 // pocet aktualne zobrazenych stranek z home_timeline
 var pageHomeCount = 1;
 </script>
@@ -34,11 +36,11 @@ def tConnectPy():
 
 
 def tVypisPy(spojeni, co):
-
+  window.document.getElementById('timeLine').style.display = "block"
   if(co == "search"):
      query = window.document.getElementById('searchInput').value;
      window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
-     ukazForm("searchForm");
+     
   else:
     window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><img src="./img/gui/sq_down_icon48.png" onclick="dalsiTwity();" /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
 
@@ -202,6 +204,7 @@ function vizualizuj(){
     //alert(jsn);
     //window.document.getElementById("jsn_vypis").innerHTML = jsn;
     window.document.getElementById('vizual').style.display = "block";
+    window.document.getElementById('timeLine').style.display = "none";
     init(jsn);
 }
 
@@ -222,6 +225,14 @@ function ukazForm(id){
         ukazF = 0;
    }
 }
+
+function schovejViz(){
+    el = window.document.getElementById('vizual');
+        if(el != null){
+            window.document.getElementById('vizual').style.display = "none"
+        }
+}
+
 </script>
 
 <!--<h1>Ahoj</h1>-->
@@ -239,13 +250,13 @@ function ukazForm(id){
     </div>
     <br />-->
    
-<img src="./img/gui/spechbubble_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');" />
+<img src="./img/gui/spechbubble_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');schovejViz();" />
 <img src="./img/gui/pencil_icon48.png" title="Timeline" onclick = "ukazForm('twtForm');" />
 <!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
 <img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
 <!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
-<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');" />
-<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a>
+<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz();" />
+<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>
 <img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm');" />
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a> |-->
 <!--<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |-->
@@ -261,7 +272,7 @@ function ukazForm(id){
 </div>
 
 <div id="contentDiv">
-    
+    <div id="loading">Loading..</div> 
 <!--<a href="./zpet.html">ZPET</a>-->
 <div id="twtFormDiv"><a href="#" onclick = "ukazForm('twtForm');"> [X] </a></div>
 <form id="twtForm" action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
@@ -280,7 +291,11 @@ function ukazForm(id){
 <!-- </form> -->
 
 <div id="time" style="padding:10px">Welcome to Titanium <script>setInterval(updateTime, 1000);</script></div>
-<div id="timeLine" style="padding:10px"><script> tVypisPy(spojeni,'timeline');</script></div>
+<div id="timeLine" style="padding:10px">
+    <script>
+        tVypisPy(spojeni,'timeline');        
+    </script>
+</div>
 
 <!--
 <div class="statusDiv"> <img src="./n0M.png" />
