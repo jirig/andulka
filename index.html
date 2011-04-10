@@ -16,10 +16,11 @@
 </head>
 
 <body>
-<div id="centr">
+
 <script>
 var spojeni;
 var replyStatusID = 0;
+var ukazF = 0; // urcuje zda je formular pro tweet (ne)zobrazen
 // pocet aktualne zobrazenych stranek z home_timeline
 var pageHomeCount = 1;
 </script>
@@ -37,9 +38,9 @@ def tVypisPy(spojeni, co):
   if(co == "search"):
      query = window.document.getElementById('searchInput').value;
      window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
-  
+     ukazForm("searchForm");
   else:
-    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
+    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><img src="./img/gui/sq_down_icon48.png" onclick="dalsiTwity();" /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
 
 def posliStatusPy(spojeni, replyStatusID):
     #try:
@@ -73,8 +74,12 @@ def vizPy(spojeni):
 
 def dalsiPy(spojeni, pages):
     co = "timeline"
-   
-    window.document.getElementById('timeLine').innerHTML=twcm.vypis(spojeni, co, page = pages) + '<br /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
+    window.document.getElementById('timeLine').innerHTML=twcm.vypis(spojeni, co, page = pages) + '<br /><img src="./img/gui/sq_down_icon48.png" onclick="dalsiTwity();" /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
+    
+
+def tKonretniTwt(spojeni):
+    statusid = window.document.getElementById('twtID').value
+    alert(twcm.getTwt(spojeni, statusid))
 
 
 </script>
@@ -109,7 +114,9 @@ var menu = Titanium.UI.createMenu();
 	Titanium.App.exit();
      },"./n0M.png");
     file.addSeparatorItem();
+    //var VIZ = Titanium.UI.createMenuItem("VIZ", function(){},iconURL="./n0M.png");
     menu.appendItem(file);
+    //menu.appendItem(VIZ);
     Titanium.UI.setMenu(menu);
 
 // Tray ikonka a menu
@@ -194,25 +201,56 @@ function vizualizuj(){
     jsn = vizPy(spojeni);
     //alert(jsn);
     //window.document.getElementById("jsn_vypis").innerHTML = jsn;
-
+    window.document.getElementById('vizual').style.display = "block";
     init(jsn);
 }
 
 function dalsiTwity(){
-    pageHomeCount ++;
+    pageHomeCount +=1;
     dalsiPy(spojeni, pageHomeCount);
+}
+
+function ukazForm(id){
+   if(ukazF == 0){
+        window.document.getElementById(id).style.display='block';
+        window.document.getElementById(id+'Div').style.display='block';
+        ukazF = 1;
+   }
+   else{
+        window.document.getElementById(id+'Div').style.display='none';
+         window.document.getElementById(id).style.display='none';
+        ukazF = 0;
+   }
 }
 </script>
 
 <!--<h1>Ahoj</h1>-->
-<script> 
-    setInterval(updateTime, 1000);
-    spojeni = tConnectPy();
-</script>
+<script>     
+    spojeni = tConnectPy();   
+</script>   
+<div id="centr">
 <div class="navigace">
- | <a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |
-<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |
-<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |
+   <!--  <div class="obr" style="text-align:center;">
+    <img src="./img/gui/spechbubble_icon48.png" title="Timeline" />
+    <img src="./img/gui/share_icon48.png" title="Vizualizace" />
+    <img src="./img/gui/star_fav_icon48.png"title="Oblíbené" />
+    <img src="./img/gui/mail_2_icon48.png"title="Zprávy" />
+    <img src="./img/gui/zoom_icon48.png"title="Vyhledat" />
+    </div>
+    <br />-->
+   
+<img src="./img/gui/spechbubble_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');" />
+<img src="./img/gui/pencil_icon48.png" title="Timeline" onclick = "ukazForm('twtForm');" />
+<!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
+<img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
+<!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
+<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');" />
+<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a>
+<img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm');" />
+<!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a> |-->
+<!--<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |-->
+<!--<img src="./img/gui/zoom_icon48.png"title="Vyhledat" />-->
+<div id="searchFormDiv"><a href="#" onclick = "ukazForm('searchForm');"> [X] </a></div>
 <form id="searchForm" action="javascript:tVypisPy(spojeni, 'search')" method="get">
   <input id = "searchInput" size="10"/>
   <input type="submit" id="searchSubmit" value="" />
@@ -222,25 +260,34 @@ function dalsiTwity(){
 </form>
 </div>
 
+<div id="contentDiv">
+    
 <!--<a href="./zpet.html">ZPET</a>-->
-<form action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
-  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea>
+<div id="twtFormDiv"><a href="#" onclick = "ukazForm('twtForm');"> [X] </a></div>
+<form id="twtForm" action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
+  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea> 
   <br />
   <span id = "pocet"></span>
   <input type="submit" value="Odeslat" />
 </form>
+<!--
+<form id="XXYXXY" action="javascript:tKonretniTwt(spojeni)" method="get">
+  <input id = "twtID" size="10"/>
+  <input type="submit" id="twtSubmit" value="..." />-->
+  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
+  <!--<img src="./img/lupa.gif"/>-->
+  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
+<!-- </form> -->
 
+<div id="time" style="padding:10px">Welcome to Titanium <script>setInterval(updateTime, 1000);</script></div>
+<div id="timeLine" style="padding:10px"><script> tVypisPy(spojeni,'timeline');</script></div>
 
-
-<div id="time" style="padding:10px">Welcome to Titanium</div>
-<div id="timeLine" style="padding:10px">TimeLine</div>
-
-
+<!--
 <div class="statusDiv"> <img src="./n0M.png" />
     A static JSON Tree structure is used as input for this animation.
             Clicking on a node should move the tree and center that node.
             The centered node's children are displayed in a relations list in the right column.
-</div>
+</div>-->
 
 <!--vizualizace-->
 <!--<a href="#" onclick = "vizualizuj(spojeni);"> VIZZZZ </a>-->
@@ -278,6 +325,7 @@ Tree Animation
         <div id="log"></div>
     </div>
 </div>
+</div> <!--content-->
 </div>  <!--centrovaci div-->
 </body>
 </html>

@@ -241,23 +241,23 @@ class OAuthApi():
     	return self.ApiCall("statuses/friends_timeline", "GET", options)
     
     def GetHomeTimeline(self, options={}):
-    	'''Get the home timeline. Unlike friends timeline it also contains retweets
-    	
-          Args:
-          options:
-          	A dict of options for the statuses/home_timeline call.
-          	See the link below for what options can be passed
-          	http://apiwiki.twitter.com/Twitter-REST-API-Method%3A-statuses-home_timeline
-          	
-          Return: The home timeline in dict format	
-    	'''
-        if(options["page"]==None):
-            return self.ApiCall("statuses/home_timeline", "GET", options)
+        '''Get the home timeline. Unlike friends timeline it also contains retweets
+
+              Args:
+              options:
+                    A dict of options for the statuses/home_timeline call.
+                    See the link below for what options can be passed
+                    http://apiwiki.twitter.com/Twitter-REST-API-Method%3A-statuses-home_timeline
+
+              Return: The home timeline in dict format
+        '''
+        pages = int(options['page'])
+        if(pages==1):
+           return self.ApiCall("statuses/home_timeline", "GET", options)
 #    	return self.ApiCall("statuses/home_timeline", "GET", options)
-        else:
-            pages = options["page"]
+        else:            
             tmplist = []
-            for n in range(1,pages):
+            for n in range(1,pages+1):
               options = {'page':n}
               appendix = self.ApiCall("statuses/home_timeline", "GET", options)
               if appendix != []:
@@ -369,6 +369,15 @@ class OAuthApi():
         print "YEAAA"
         self.ApiCall("favorites/destroy/"+statusid, "POST")
         return
+    def GetStatusById(self, statusid):
+        """metoda vrati status s konkretnim id @statusid"""
+        print "Dejsem TwT: "+statusid
+        data = self.ApiCall("statuses/show/"+statusid, "GET")
+        return data
+
+    def GetMentions(self):
+        data = self.ApiCall("statuses/mentions", "GET")
+        return data
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------       
 #------------------------------------------------------------------------------

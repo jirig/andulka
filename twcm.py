@@ -17,11 +17,16 @@ consumer_secret = "mUzfFwtes7UW854B7yW5rvb6RZE7Wy8OD5DMFrq3mCA"
 
 def vypis(twitter, co, search = None, page = None):
   if( co == "timeline"):
+    if(page == None):
+          page=1
     dataList =  twitter.GetHomeTimeline(options = {'page':page})
+#    dataList =  twitter.GetHomeTimeline()
   elif(co == "myFavs"):
     dataList =  twitter.GetAllUsersFavs()
 #  elif(co == "usrFavs"):
 #    dataList =  twitter.GetConcretUserFavs()
+  elif(co == "mentions"):
+    dataList =  twitter.GetMentions()
   elif(co == "search"):
      dataList = twitter.GetSearchResult(search)
 #  pomocna promenna pro ulozeni a vypis statusExpecting , delimiter: line 1 u
@@ -31,7 +36,7 @@ def vypis(twitter, co, search = None, page = None):
 #vypis pro vysledky hledani
   if(co == "search"):
 #        print dataList["results"][1]
-        for i in range(0,len(dataList["results"])-1):
+        for i in range(0,len(dataList["results"])):
             try:
                 text=replaceUrl(((dataList['results'][i]['text'])),0)
 #                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br />" + ((dataList['results'][i]['created_at'])) + "<br /></div>"
@@ -44,21 +49,21 @@ def vypis(twitter, co, search = None, page = None):
                 a = "<b> Žádný výsledek nebyl nalezen</b>"
 #  vypis statusu krom vyhledavani
   else:
-      for i in range(0,len(dataList)-1):
+      for i in range(0,len(dataList)):
 #        try:
             text=""
             text = replaceUrl(dataList[i]['text'],0)
             statusid = dataList[i]['id_str']
             favorited = dataList[i]['favorited']
             if(co=="myFavs"):
-                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
 #                if(favorited):
 #                    a += '<h1>FFFUUUUUUUU</h1>'
             else:
                 if(favorited):
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
                 else:
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>  <a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>   <img src='./img/favorite.png' onclick='newFavPy(spojeni,\""+statusid+"\")'/><a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
                 
 #                    a += '<h1>FFFUUUUUUUU</h1>'
                
@@ -82,7 +87,7 @@ def vizData(twitter):
 #    jsn = simplejson.loads('{"id": "stred00", "name": "stred","data": { "some key": "some value", "some other key": "some other value"},"children": [ {"id": "232_42", "name": "KUCHTA Band", "data": { "tsomekey":"twitter je nununu","image":"n0M.png"},"children": []},'+'{"id": "stre", "name": "sted","data": { "some key": "some value", "some other key": "some other value"},"children": []}]}')
 #    return simplejson.dumps(jsn)
     tmp_jsn = ""
-    dataList =  twitter.GetHomeTimeline()
+    dataList =  twitter.GetHomeTimeline(options = {'page':1})
     for i in range(0,len(dataList)-1):
 #        try:
             text='...'
@@ -178,3 +183,7 @@ def reply(twitter):
   #user_timeline = twitter.GetUserTimeline()
   #user_timeline = twitter.GetAllUsersFavs()
   #return vypis(user_timeline)
+def getTwt(twitter, statusid):
+    data=twitter.GetStatusById(statusid)
+    print data
+    return data['text']
