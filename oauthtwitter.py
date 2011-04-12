@@ -378,6 +378,10 @@ class OAuthApi():
     def GetMentions(self):
         data = self.ApiCall("statuses/mentions", "GET")
         return data
+    def Retweet(self, statusid):
+        print "Retweet: "+statusid
+        self.ApiCall("statuses/retweet/"+statusid, "POST")
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------       
 #------------------------------------------------------------------------------

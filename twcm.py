@@ -39,12 +39,14 @@ def vypis(twitter, co, search = None, page = None):
         for i in range(0,len(dataList["results"])):
             try:
                 text=replaceUrl(((dataList['results'][i]['text'])),0)
+                text = replaceTag(text)
+                print "..X-X-X.."
 #                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br />" + ((dataList['results'][i]['created_at'])) + "<br /></div>"
 #                favorited = dataList['results'][i]['favorited'] ###NELZE###
                 statusid = dataList['results'][i]['id_str']
 #                if(favorited):
 #                    a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+ ((dataList['results'][i]['created_at'])) +"<br /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
-                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br />" + ((dataList['results'][i]['created_at'])) + "<br /></div>"
+                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + text + "<br />" + ((dataList['results'][i]['created_at'])) +"<img src='./img/retweet.png' onclick='retwtPy(spojeni,\""+statusid+"\")' /><a href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<br /></div>"
             except:
                 a = "<b> Žádný výsledek nebyl nalezen</b>"
 #  vypis statusu krom vyhledavani
@@ -53,17 +55,18 @@ def vypis(twitter, co, search = None, page = None):
 #        try:
             text=""
             text = replaceUrl(dataList[i]['text'],0)
+            text = replaceTag(text)
             statusid = dataList[i]['id_str']
             favorited = dataList[i]['favorited']
             if(co=="myFavs"):
-                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<img src='./img/retweet.png' onclick='retwtPy(spojeni,\""+statusid+"\")' /><a href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
 #                if(favorited):
 #                    a += '<h1>FFFUUUUUUUU</h1>'
             else:
                 if(favorited):
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<img src='./img/retweet.png' onclick='retwtPy(spojeni,\""+statusid+"\")' /><a href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
                 else:
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>   <img src='./img/favorite.png' onclick='newFavPy(spojeni,\""+statusid+"\")'/><a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<img src='./img/retweet.png' onclick='retwtPy(spojeni,\""+statusid+"\")' /><a href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<img src='./img/reply.png' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")' /> <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>   <img src='./img/favorite.png' onclick='newFavPy(spojeni,\""+statusid+"\")'/><a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
                 
 #                    a += '<h1>FFFUUUUUUUU</h1>'
                
@@ -167,6 +170,17 @@ def replaceUrl(text,viz):
               
     return text
 
+def replaceTag(text):
+    for word in text.split(" "):
+        m = re.match(r"(#.+)", word)
+        if (m):
+#            print "ahoj "+m.group(1)
+#            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
+#             text = text.replace(word,"<a href='#' onclick='Titanium.Desktop.openURL(\'"+m.group(1)+"\');'>"+m.group(1)+"</a>")
+            text = text.replace(word,'<a href="#" onclick="tVypisPy(spojeni, \'search\',\''+m.group(1)+'\');">'+m.group(1)+'</a>')
+
+    return text
+
 def browserOpen(link):
     subprocess.Popen(["x-www-browser"],True)
   
@@ -187,3 +201,6 @@ def getTwt(twitter, statusid):
     data=twitter.GetStatusById(statusid)
     print data
     return data['text']
+def retweet(twitter, statusid):
+    data = twitter.Retweet(statusid)
+    return data

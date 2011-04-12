@@ -35,11 +35,13 @@ def tConnectPy():
   return twcm.connectToTw()
 
 
-def tVypisPy(spojeni, co):
+def tVypisPy(spojeni, co, query = None):
   window.document.getElementById('timeLine').style.display = "block"
   if(co == "search"):
-     query = window.document.getElementById('searchInput').value;
-     window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
+      if(query == None):
+         query = window.document.getElementById('searchInput').value;         
+      
+      window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
      
   else:
     window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><img src="./img/gui/sq_down_icon48.png" onclick="dalsiTwity();" /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
@@ -82,7 +84,9 @@ def dalsiPy(spojeni, pages):
 def tKonretniTwt(spojeni):
     statusid = window.document.getElementById('twtID').value
     alert(twcm.getTwt(spojeni, statusid))
-
+def retwtPy(spojeni, statusid):
+    twcm.retweet(spojeni, statusid)
+    alert("Retwitnuto")
 
 </script>
 <script>
@@ -107,7 +111,7 @@ window.document.getElementById('time').innerHTML = hours + ":" + (minutes<10?"0"
 
 
 <!--Titanium-->
-<script>
+<!--<script>
 // Nastaveni okna aplikace / Titanium
 
 var menu = Titanium.UI.createMenu();
@@ -165,7 +169,7 @@ Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
             alert("Got page initialized event!");
     });
 </script>
-
+-->
 <!--javascript-->
 <script>
 
@@ -251,12 +255,13 @@ function schovejViz(){
     <br />-->
    
 <img src="./img/gui/spechbubble_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');schovejViz();" />
-<img src="./img/gui/pencil_icon48.png" title="Timeline" onclick = "ukazForm('twtForm');" />
+<img src="./img/gui/pencil_icon48.png" title="Nový twít" onclick = "ukazForm('twtForm');" />
 <!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
 <img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
 <!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
 <img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz();" />
-<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>
+<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz();" />
+<!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>-->
 <img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm');" />
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a> |-->
 <!--<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |-->
