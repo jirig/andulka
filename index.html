@@ -44,7 +44,8 @@ def tVypisPy(spojeni, co, query = None):
       window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
      
   else:
-    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><img src="./img/gui/sq_down_icon48.png" onclick="dalsiTwity();" /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
+    #dalsi = u'další'
+    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><a href="#" onclick="dalsiTwity();">--dalsi--</a>'
 
 def posliStatusPy(spojeni, replyStatusID):
     #try:
@@ -78,7 +79,7 @@ def vizPy(spojeni):
 
 def dalsiPy(spojeni, pages):
     co = "timeline"
-    window.document.getElementById('timeLine').innerHTML=twcm.vypis(spojeni, co, page = pages) + '<br /><img src="./img/gui/sq_down_icon48.png" onclick="dalsiTwity();" /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
+    window.document.getElementById('timeLine').innerHTML=twcm.vypis(spojeni, co, page = pages) + '<br /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
     
 
 def tKonretniTwt(spojeni):
@@ -111,9 +112,9 @@ window.document.getElementById('time').innerHTML = hours + ":" + (minutes<10?"0"
 
 
 <!--Titanium-->
-<!--<script>
+<script>
 // Nastaveni okna aplikace / Titanium
-
+/*
 var menu = Titanium.UI.createMenu();
     var file = Titanium.UI.createMenuItem("File");
     file.addItem("Quit",function() {
@@ -124,7 +125,7 @@ var menu = Titanium.UI.createMenu();
     menu.appendItem(file);
     //menu.appendItem(VIZ);
     Titanium.UI.setMenu(menu);
-
+*/
 // Tray ikonka a menu
 var tray = Titanium.UI.addTray(iconURL="./n0M.png", function(){
   //mWindow.show();
@@ -169,7 +170,7 @@ Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
             alert("Got page initialized event!");
     });
 </script>
--->
+
 <!--javascript-->
 <script>
 
@@ -184,8 +185,14 @@ function pocetZnaku(kde)
 {
 // spocita pocet znaku v textarea
 //   pocetpismenek ++;
-  window.document.getElementById('pocet').innerHTML =140 - window.document.getElementById(kde).value.length;
-  
+
+//  window.document.getElementById('pocet').innerHTML =140 - window.document.getElementById(kde).value.length;
+  pocetz = 140 - window.document.getElementById(kde).value.length;
+  if(pocetz < 0){
+      window.document.getElementById('pocet').style.color = "red";
+      window.document.getElementById('pocet').style.fontWeight = "bold";
+  }
+  window.document.getElementById('pocet').innerHTML = pocetz;
 }
 
 function vycisti(id)
@@ -209,6 +216,7 @@ function vizualizuj(){
     //window.document.getElementById("jsn_vypis").innerHTML = jsn;
     window.document.getElementById('vizual').style.display = "block";
     window.document.getElementById('timeLine').style.display = "none";
+    <!--window.document.getElementById('infovis').style.width = document.documentElement.clientHeight + "px"-->
     init(jsn);
 }
 
@@ -218,16 +226,38 @@ function dalsiTwity(){
 }
 
 function ukazForm(id){
-   if(ukazF == 0){
+   if(id == "twtForm"){
+    if(ukazTF == 0){ // statusovy formular je schovan -> zobrazit
+        // skryt vyhledavaci formular
+        window.document.getElementById("searchForm").style.display='none';
+        window.document.getElementById('searchFormDiv').style.display='none';                   
+        ukazSF = 0; // nastavy priznak pro vyhledavaci formular na "schovan"
         window.document.getElementById(id).style.display='block';
         window.document.getElementById(id+'Div').style.display='block';
-        ukazF = 1;
+        ukazTF = 1;
    }
    else{
         window.document.getElementById(id+'Div').style.display='none';
-         window.document.getElementById(id).style.display='none';
-        ukazF = 0;
+        window.document.getElementById(id).style.display='none';
+        ukazTF = 0;
    }
+  }
+  else{
+      if(ukazSF == 0){
+        window.document.getElementById("twtForm").style.display='none';
+        window.document.getElementById('twtFormDiv').style.display='none';
+        ukazTF = 0;
+        window.document.getElementById(id).style.display='block';
+        window.document.getElementById(id+'Div').style.display='block';
+        ukazSF = 1;
+      }
+      else{
+        window.document.getElementById(id+'Div').style.display='none';
+        window.document.getElementById(id).style.display='none';
+        ukazSF = 0;
+      }
+
+  }
 }
 
 function schovejViz(){
@@ -254,38 +284,40 @@ function schovejViz(){
     </div>
     <br />-->
    
-<img src="./img/gui/spechbubble_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');schovejViz();" />
-<img src="./img/gui/pencil_icon48.png" title="Nový twít" onclick = "ukazForm('twtForm');" />
-<!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
+<img src="./img/gui/pencil_icon48.png" title="Nový twít" onclick = "ukazForm('twtForm');"  style="font-size: 48px; border-right: solid 1px #aaa; padding-right: 15px;" />
+
+<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');schovejViz();" />
 <img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
+<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz();" />
+<!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
+
 <!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
 <img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz();" />
-<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz();" />
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>-->
 <img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm');" />
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a> |-->
 <!--<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |-->
 <!--<img src="./img/gui/zoom_icon48.png"title="Vyhledat" />-->
-<div id="searchFormDiv"><a href="#" onclick = "ukazForm('searchForm');"> [X] </a></div>
-<form id="searchForm" action="javascript:tVypisPy(spojeni, 'search')" method="get">
-  <input id = "searchInput" size="10"/>
-  <input type="submit" id="searchSubmit" value="" />
-  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
-  <!--<img src="./img/lupa.gif"/>-->
-  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
-</form>
-</div>
+</div> <!--navigace-->
 
 <div id="contentDiv">
     <div id="loading">Loading..</div> 
 <!--<a href="./zpet.html">ZPET</a>-->
+<div id="searchFormDiv"><a href="#" onclick = "ukazForm('searchForm');"> [X] </a></div>
+<form id="searchForm" action="javascript:tVypisPy(spojeni, 'search')" method="get">
+  <input id = "searchInput" size="20"/>
+  <input type="submit" id="searchSubmit" value="vyhledat" />
+  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
+  <!--<img src="./img/lupa.gif"/>-->
+  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
+</form>
 <div id="twtFormDiv"><a href="#" onclick = "ukazForm('twtForm');"> [X] </a></div>
 <form id="twtForm" action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
   <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea> 
   <br />
   <span id = "pocet"></span>
   <input type="submit" value="Odeslat" />
-</form>
+  </form>
 <!--
 <form id="XXYXXY" action="javascript:tKonretniTwt(spojeni)" method="get">
   <input id = "twtID" size="10"/>
@@ -335,7 +367,7 @@ Tree Animation
 
 <div style="text-align:center;"><a href="ex1.js">See the Example Code</a></div>      
     <div id="center-container">
-        <div id="infovis"></div>
+        <div id="infovis" style="width: 90%;"></div>
     </div>
         <div id="right-container">
 
