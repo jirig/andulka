@@ -3,12 +3,14 @@ def test():
   return "oo"
 
 # -*- coding: utf-8 -*-
+from curses import nonl
 from oauthtwitter import OAuthApi
 import pprint
 import re
 import subprocess
 import simplejson
 import json
+import bayes
 
 OATOKEN="111682467-nymKCZGQxijr3a8U4keoiHCArRnkLqYiHjE8QwoE"
 OATOKENSECRET= "uSELZWESpSikb3Z0w8t3TGkByrlvW3kInpK7XNdV94"
@@ -16,7 +18,7 @@ consumer_key = "qkhPVwSDfFp9qUr9KlVdPA"
 consumer_secret = "mUzfFwtes7UW854B7yW5rvb6RZE7Wy8OD5DMFrq3mCA"
 
 def vypis(twitter, co, search = None, page = None):
-  if( co == "timeline"):
+  if((co == "timeline") or (co == "filtr")):
     if(page == None):
           page=1
     dataList =  twitter.GetHomeTimeline(options = {'page':page})
@@ -42,15 +44,17 @@ def vypis(twitter, co, search = None, page = None):
                 text=replaceUrl(((dataList['results'][i]['text'])),0)
                 text = replaceTag(text,0)
                 text = replaceScreenName(text,0)
-                print "..X-X-X.."
-#                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + ((dataList['results'][i]['text'])) + "<br />" + ((dataList['results'][i]['created_at'])) + "<br /></div>"
 #                favorited = dataList['results'][i]['favorited'] ###NELZE###
                 statusid = dataList['results'][i]['id_str']
-#                if(favorited):
-#                    a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+ ((dataList['results'][i]['created_at'])) +"<br /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
-                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br />" + text + "<br />" + ((dataList['results'][i]['created_at'])) +"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<br /></div>"
+                a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br />" + ((dataList['results'][i]['created_at'])) +"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<br /></div>"
             except:
                 a = "<b> Žádný výsledek nebyl nalezen</b>"
+
+  elif(co == "filtr"):
+#      for i in range(0,len(dataList)):
+#        a+= dataList[i]['user']['screen_name'] + " "+ unicode(dataList[i]['text']) + " "
+#        a+= unicode(dataList[i]['text']) + " "
+        return dataList
 #  vypis statusu krom vyhledavani
   else:
       if(co=="myFavs"):
@@ -59,6 +63,7 @@ def vypis(twitter, co, search = None, page = None):
          a="<h1>Timeline</h1>"
       elif(co=="mentions"):
          a="<h1>Mentions</h1>"
+     
       for i in range(0,len(dataList)):
 #        try:
             text=""
@@ -67,29 +72,16 @@ def vypis(twitter, co, search = None, page = None):
             text = replaceScreenName(text,0)
             statusid = dataList[i]['id_str']
             favorited = dataList[i]['favorited']
-            if(co=="myFavs"):               
-                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
-#                if(favorited):
-#                    a += '<h1>FFFUUUUUUUU</h1>'
+#            if(co=="myFavs"):
+#                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
+#            else:
+            if(favorited):
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> Reply |</a><img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
             else:
-                if(favorited):
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> Reply |</a><img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
-                else:
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
+                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZajimavy(\""+statusid+"\")'>Zs</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span></div>"
                 
-#                    a += '<h1>FFFUUUUUUUU</h1>'
-               
-#            a += "<div class='statusDiv'><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + ((dataList[i]['text'])) + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"</span></div>"
-#        except:
+            #except:
 #            a = "<b> Žádný výsledek nebyl nalezen</b>"
-
-    #print(dataList[i]['user']['screen_name'])
-    #print(dataList[i]['text']) 
-    #print a
-
-
-
-    
   return a
 
 def vizData(twitter):
@@ -124,10 +116,8 @@ def vizData(twitter):
             else:
                 tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey":"'+text+'", "image":"'+imgurl+'"}, "children":[]},'
                 print "===== E ======"
-    
-#    jsn = simplejson.loads('{"id": "stred00", "name": "stred","data": { "some key": "some value", "some other key": "some other value"},"children": [' +tmp_jsn+ ']}')
+
     tmp_jsn = tmp_jsn.encode('utf-8')
-#    jsn = '{"id": "stred00", "name": "stred","data": { "some key": "some value", "some other key": "some other value"},"children": [' +tmp_jsn+ ']}'
     jsn = simplejson.loads('{"id": "ME", "name": "me","data": {},"children": [' +tmp_jsn+ ']}')
     
 #    print jsn
@@ -170,7 +160,9 @@ def publishStatus(twitter, text, statusID = None, input_encoding='utf8'):
 def replaceUrl(text,viz):
     """ nahradi vsechny odkazy v "text" za aktivni """
     for word in text.split(" "):
-        m = re.match(r"(http://.+)", word)
+#        m = re.match(r"(http://.+)", word)
+        m = re.match(r'((http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&%\$\-]+)*@)?((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.[a-zA-Z]{2,4})(\:[0-9]+)?(/[^/][a-zA-Z0-9\.\,\?\'\\/\+&%\$#\=~_\-@]*)*)', word)
+#        m = re.match(r"(http://[^ ]+[^,. ])", word)
         if (m):
 #            print "ahoj "+m.group(1)
 #            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
@@ -184,23 +176,24 @@ def replaceUrl(text,viz):
 
 def replaceTag(text, viz):
     for word in text.split(" "):
-        m = re.match(r"(#.+)", word)
+#        m = re.match(r"(#.+)", word)
+        m = re.match(r"(.*)(#\w+)", word)
         if (m):
 #            print "ahoj "+m.group(1)
 #            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
 #             text = text.replace(word,"<a href='#' onclick='Titanium.Desktop.openURL(\'"+m.group(1)+"\');'>"+m.group(1)+"</a>")
 #            text = text.replace(word,'<a href="#" onclick="tVypisPy(spojeni, \'search\',\''+m.group(1)+'\');">'+m.group(1)+'</a>')
             if(viz):
-               text = text.replace(word,'<a href=\\"#\\" onclick=\\"tVypisPy(spojeni, \'search\',\''+m.group(1)+'\');\\">'+m.group(1)+'</a>')
-               
+               text = text.replace(word,''+m.group(1)+'<a href=\\"#\\" onclick=\\"tVypisPy(spojeni, \'search\',\''+m.group(2)+'\');\\">'+m.group(2)+'</a>')
             else:
-               text = text.replace(word,'<a href="#" onclick="tVypisPy(spojeni, \'search\',\''+m.group(1)+'\');">'+m.group(1)+'</a>')
+               text = text.replace(word,''+m.group(1)+'<a href="#" onclick="tVypisPy(spojeni, \'search\',\''+m.group(2)+'\');">'+m.group(2)+'</a>')
 
     return text
 
 def replaceScreenName(text,viz):
     for word in text.split(" "):
-        m = re.match(r"(@)(.+)", word)
+#        m = re.match(r"(@)(.+)", word)
+        m = re.match(r"(@)(\w+)", word)
         if (m):
 #            print "ahoj "+m.group(1)
 #            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
@@ -235,3 +228,31 @@ def getTwt(twitter, statusid):
 def retweet(twitter, statusid):
     data = twitter.Retweet(statusid)
     return data
+
+### Funkce vztahujici se k filtrpovani ###
+
+def bFiltruj(twitter):
+#    b = bayes.Bayes()
+    text = vypis(twitter, co = "filtr")
+    
+#    b.parseData(text)
+    
+    # a co SPESL ZNAKY JAKO PREVRACENE UVOZOVKY A jine UNICODE...?
+#    splitText = text.replace("."," ").replace(","," ").replace("\""," ").replace("#"," ").replace("@"," ").replace("-"," ").replace(">"," ").replace("<"," ").replace("("," ").replace(")"," ").replace("$"," ").replace("\'"," ").replace("\\"," ").replace("/"," ").replace("!"," ").replace("?"," ").replace(":"," ").replace("\n", " ").lower()
+    splitText = replaceNonAlpha(text);
+    splitText = splitText.split()
+    return splitText
+#    return("KOnec filtru")
+
+def replaceNonAlpha(text):
+    # (?u) => unicode flag
+    text = text.decode('utf-8')
+    return re.sub("(?u)[\W\d]", " ", text.strip())
+#    return re.sub("[\W\d]", " ", text.strip())
+def splitIt(text):
+    return text.split()
+
+
+
+def jstest():
+    return("jstest")
