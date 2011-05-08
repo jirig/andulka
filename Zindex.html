@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+ <meta charset="utf-8" />
+ <title>Andulka - adaptivní twitter klient </title>
+ <link type="text/css" href="./viz/base.css" rel="stylesheet" />
+ <link type="text/css" href="./viz/Hypertree.css" rel="stylesheet" />
+ <link type="text/css" href="./gui.css" rel="stylesheet" />
+ <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
+
+<!-- JIT Library File -->
+<script language="javascript" type="text/javascript" src="./js/Jit/jit.js"></script>
+
+<!-- vizualizace -->
+<script language="javascript" type="text/javascript" src="./viz/ex1.js"></script>
+<!--javascriptove fce-->
+<script type="text/javascript" src="./myDom.js"> </script>
+</head>
+
+<body onload="document.getElementById('loading').style.display = 'none';">
+
+<script>
+var spojeni;
+var replyStatusID = 0;
+var ukazF = 0;
+var ukazTF = 0; // urcuje zda je formular pro tweet (ne)zobrazen
+var ukazSF = 0;
+// pocet aktualne zobrazenych stranek z home_timeline
+var pageHomeCount = 1;
+</script>
+<!--python fce-->
+<script type="text/python">
+import twcm
+
+def tConnectPy():
+  print "Spojuji------"
+  return twcm.connectToTw()
+
+
+def tVypisPy(spojeni, co, query = None):
+  window.document.getElementById('timeLine').style.display = "block"
+  if(co == "search"):
+      if(query == None):
+         query = window.document.getElementById('searchInput').value;         
+      
+      window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co, query)
+     
+  else:
+    #dalsi = u'další'
+    window.document.getElementById('timeLine').innerHTML = twcm.vypis(spojeni, co) + '<br /><a href="#" onclick="dalsiTwity();">--dalsi--</a>'
+
+def posliStatusPy(spojeni, replyStatusID):
+    #try:
+      text = window.document.getElementById('statusArea').value;
+      if(replyStatusID):
+        twcm.publishStatus(spojeni, text, statusID = replyStatusID);
+        replyStatusID = 0;
+      else:
+        twcm.publishStatus(spojeni, text);
+      window.document.getElementById('statusArea').value = ""
+      
+      ukazForm("twtForm")
+      window.document.getElementById('pocet').innerHTML =140
+    #except:
+     #  alert("odeslani selhalo");
+
+def otevriOdkazPy(link):
+    twcm.browserOpen(link)
+    
+def newFavPy(spojeni, statusid):
+    twcm.newFav(spojeni, statusid)
+    print "FAV +"
+    return
+def unFavPy(spojeni, statusid):
+    twcm.unFav(spojeni, statusid)
+    print "FAV +"
+    return
+
+def vizPy(spojeni):
+    jsn = twcm.vizData(spojeni)
+    return jsn
+
+def dalsiPy(spojeni, pages):
+    co = "timeline"
+    window.document.getElementById('timeLine').innerHTML=twcm.vypis(spojeni, co, page = pages) + '<br /><a href="#" onclick="dalsiTwity();">--DALSI--</a>'
+    
+
+def tKonretniTwt(spojeni):
+    statusid = window.document.getElementById('twtID').value
+    alert(twcm.getTwt(spojeni, statusid));
+
+def retwtPy(spojeni, statusid):
+    twcm.retweet(spojeni, statusid)
+    alert("Retwitnuto")
+
+def bFiltrujPy():
+    alert("BFP")
+   
+
+
+</script>
+<script>
+function updateTime()
+
+{
+
+var now = new Date();
+
+var hours = now.getHours();
+
+var minutes = now.getMinutes();
+
+var seconds = now.getSeconds();
+
+window.document.getElementById('time').innerHTML = hours + ":" + (minutes<10?"0" +minutes:minutes) + ":" + (seconds<10?"0" + seconds:seconds);
+
+}
+
+
+</script>
+
+
+<!--Titanium-->
+<script>
+// Nastaveni okna aplikace / Titanium
+/*
+var menu = Titanium.UI.createMenu();
+    var file = Titanium.UI.createMenuItem("File");
+    file.addItem("Quit",function() {
+	Titanium.App.exit();
+     },"./n0M.png");
+    file.addSeparatorItem();
+    //var VIZ = Titanium.UI.createMenuItem("VIZ", function(){},iconURL="./n0M.png");
+    menu.appendItem(file);
+    //menu.appendItem(VIZ);
+    Titanium.UI.setMenu(menu);
+*/
+// Tray ikonka a menu
+
+var tray = Titanium.UI.addTray(iconURL="./n0M.png", function(){
+  //mWindow.show();
+   var mWindow = Titanium.UI.getCurrentWindow();
+   if(mWindow.isVisible()){
+     mWindow.setVisible(false);
+   }
+   else{
+     
+     mWindow.setVisible(true);
+     mWindow.focus();
+   }
+     //window.showInspector();      
+});
+// Tooltip pro ikonku
+tray.setHint("Andulka");
+var trayMenu = Titanium.UI.createMenu();
+tray.setMenu(trayMenu);
+
+var quit = Titanium.UI.createMenuItem("Quit", function(){
+    Titanium.App.exit();
+});
+trayMenu.appendItem(quit);
+var showW = Titanium.UI.createMenuItem("Show", function(){
+     var mWindow = Titanium.UI.getCurrentWindow();
+     mWindow.setVisible(true);
+     mWindow.focus();
+});
+trayMenu.appendItem(showW);
+// 
+// notifikace
+//Titanium.UI.UserWindow.setTransparency(50)
+//var notif = Titanium.Notification.createNotification(Titanium.UI.createWindow());
+//notif.setTitle("New message");
+//notif.setMessage("How are you doing?");
+//notif.setTimeout(5)
+//notif.show();
+
+var globalObject;
+Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
+    {
+            alert("Got page initialized event!");
+    });
+</script>
+
+<!--javascript-->
+<script>
+
+function presmeruj()
+{
+  window.location.href="http://google.com";
+}
+
+var pocetpismenek=0;
+
+function pocetZnaku(kde)
+{
+// spocita pocet znaku v textarea
+//   pocetpismenek ++;
+
+//  window.document.getElementById('pocet').innerHTML =140 - window.document.getElementById(kde).value.length;
+  pocetz = 140 - window.document.getElementById(kde).value.length;
+  if(pocetz < 0){
+      window.document.getElementById('pocet').style.color = "red";
+      window.document.getElementById('pocet').style.fontWeight = "bold";
+  }
+  window.document.getElementById('pocet').innerHTML = pocetz;
+}
+
+function vycisti(id)
+{
+   window.document.getElementById(id).value = ""
+}
+function otevriOdkaz(link)
+{
+    Titanium.Platform.openURL(link);
+}
+
+function reply(spojeni,sName, sID){
+    if(ukazTF == 0) ukazForm("twtForm");
+    area = window.document.getElementById("statusArea");
+    area.innerHTML = "@" + sName + " ";
+    replyStatusID = sID
+}
+
+function vizualizuj(){
+    jsn = vizPy(spojeni);
+    //alert(jsn);
+    //window.document.getElementById("jsn_vypis").innerHTML = jsn;
+    window.document.getElementById('vizual').style.display = "block";
+    window.document.getElementById('timeLine').style.display = "none";
+    //window.document.getElementById('infovis').style.width = document.documentElement.clientHeight + "px"
+    init(jsn);
+}
+
+function dalsiTwity(){
+    pageHomeCount +=1;
+    dalsiPy(spojeni, pageHomeCount);
+}
+
+function ukazForm(id){
+   if(id == "twtForm"){
+    if(ukazTF == 0){ // statusovy formular je schovan -> zobrazit
+        // skryt vyhledavaci formular
+        window.document.getElementById("searchForm").style.display='none';
+        window.document.getElementById('searchFormDiv').style.display='none';                   
+        ukazSF = 0; // nastavy priznak pro vyhledavaci formular na "schovan"
+        window.document.getElementById(id).style.display='block';
+        window.document.getElementById(id+'Div').style.display='block';
+        ukazTF = 1;
+        replyStatusID = null;
+        area = window.document.getElementById("statusArea");
+        area.innerHTML ="";
+    }
+    else{
+        window.document.getElementById(id+'Div').style.display='none';
+        window.document.getElementById(id).style.display='none';
+        ukazTF = 0;
+       }
+  }
+  else{
+      if(ukazSF == 0){
+        window.document.getElementById("twtForm").style.display='none';
+        window.document.getElementById('twtFormDiv').style.display='none';
+        ukazTF = 0;
+        window.document.getElementById(id).style.display='block';
+        window.document.getElementById(id+'Div').style.display='block';
+        ukazSF = 1;
+      }
+      else{
+        window.document.getElementById(id+'Div').style.display='none';
+        window.document.getElementById(id).style.display='none';
+        ukazSF = 0;
+      }
+
+  }
+}
+
+function schovejViz(){
+    el = window.document.getElementById('vizual');
+        if(el != null){
+            window.document.getElementById('vizual').style.display = "none"
+        }
+}
+
+function testdb(){
+   var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(
+    Titanium.Filesystem.getApplicationDataDirectory(), 'mydatabase.db'));
+
+db.execute("CREATE TABLE IF NOT EXISTS test(id INTEGER, name TEXT)");
+db.execute("INSERT INTO test VALUES(123, 'a')");
+
+var resultSet = db.execute("SELECT * FROM test");
+alert("Found " + resultSet.rowCount() + " rows");
+while (resultSet.isValidRow())
+{
+    var text = "";
+    for (var i = 0; i < resultSet.fieldCount(); i++){
+        text += resultSet.fieldName(i) + ":"+ resultSet.field(i) + " ";}
+    alert(text);
+    resultSet.next();
+}
+}
+function bFiltruj(){
+
+   var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(
+    Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+    
+    db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
+    //db.execute("INSERT INTO slovo VALUES(123, 'llala')");
+
+  /*
+    var resultSet = db.execute("SELECT * FROM slovo");
+    //alert(twcm.jstest())
+    alert("Found " + resultSet.rowCount() + " rows");
+        */
+    
+   /* while (resultSet.isValidRow())
+    {
+    var text = "";
+    for (var i = 0; i < resultSet.fieldCount(); i++){
+        // vezme nazev Iteho sloupce a hodnotu Iteho sloupce
+        text += resultSet.fieldName(i) + ":"+ resultSet.field(i) + " ";}
+    
+    resultSet.next();
+    text += "\n";
+    }
+    */
+    //alert(twcm.bFiltruj(spojeni));
+    arrayPy = twcm.bFiltruj(spojeni);
+    hm = ""
+    a = 0
+    while(arrayPy.length > 0){
+        tmpSlovo = arrayPy.pop()
+        dbUpdate(db, tmpSlovo,0)
+        a ++;
+        hm += " " + tmpSlovo
+    }
+    alert(hm + ":" + a)
+    db.close()
+    //alert(text);
+}
+function dbUpdate(db, slovo, zajimavost){
+     var resultSet;
+    // alert("update")
+     resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ?", slovo);
+          // existujeli slovo v db
+          
+     if(resultSet.fieldCount() > 0){
+         // nezajimavy(spam) = 0 , zajimavy = 1
+         if(zajimavost){
+            pocetZ = resultSet.fieldByName("pocetZ");           
+            pocetZ = parseInt(pocetZ)+1;
+            resultSet= db.execute("UPDATE slovo SET pocetZ = ? WHERE slovo = ?",pocetZ, slovo);
+         }
+        else{
+            pocetN = resultSet.fieldByName("pocetN");
+            pocetN = parseInt(pocetN)+1;
+            resultSet= db.execute("UPDATE slovo SET pocetN = ? WHERE slovo = ?",pocetN, slovo);
+         }
+     }
+      else{
+         // neexistuje v DB
+         if(zajimavost)
+            resultSet = db.execute("INSERT INTO slovo (slovo, pocetN, pocetZ) VALUES(?, 0, 1)",slovo);
+        else
+            resultSet = db.execute("INSERT INTO slovo (slovo, pocetN, pocetZ) VALUES(?, 1, 0)",slovo);
+      }
+     //alert("Found " + resultSet.rowCount() + " rows");
+}
+
+function dbPridatZajimavy(statusId){
+    // spojeni s DB
+     
+     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));   
+     db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
+     //db.execute("INSERT INTO slovo VALUES('ahoj', 1, 22)");
+
+    //arrayPy = twcm.bFiltruj(spojeni);
+    
+    //text = window.document.getElementById(statusId).innerHTML
+    text = twcm.getTwt(spojeni, statusId)
+    alert(statusId)
+    forSplit = twcm.replaceNonAlpha(text)
+    //alert("pred split")
+    // pole s jednotlivymi slovy
+    arrayPy = twcm.splitIt(forSplit);
+    hm = ""
+    a = 0
+    //alert(arrayPy)
+    while(arrayPy.length > 0){
+        tmpSlovo = arrayPy.pop()
+        dbUpdate(db, tmpSlovo,1)
+        a ++;
+        hm += " " + tmpSlovo
+    }    
+    db.close()
+    alert(hm + ":" + a)
+}
+
+function bSelekce(){
+
+     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+     db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
+    // natahnuti timeline se vsim vsudy do dataList v JSON
+    dataList = twcm.vypis(spojeni, "filtr");
+    //alert(dataList[0].text)
+    //alert(dataList.length)
+    for(i = 0; i < dataList.length; i++){
+        //alert(dataList[i].text)
+        forSplit = twcm.replaceNonAlpha(dataList[i].text)
+        //alert(forSplit)
+        wordArray = twcm.splitIt(forSplit);
+         while(wordArray.length > 0){
+            tmpSlovo = wordArray.pop()
+            dbUpdate(db, tmpSlovo,0)
+        }
+    }
+
+    db.close()
+    alert("hotovo")
+}
+
+</script>
+
+<!--<h1>Ahoj</h1>-->
+<script>     
+    spojeni = tConnectPy();
+</script>   
+<div id="centr">
+<div class="navigace">
+   
+<img src="./img/gui/pencil_icon48.png" title="Nový twít" onclick = "ukazForm('twtForm');"  style="font-size: 48px; border-right: solid 1px #aaa; padding-right: 15px;" />
+
+<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');schovejViz();" />
+<img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
+<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz();" />
+<!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
+
+<!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
+<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz();" />
+<!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>-->
+<img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm');" />
+<!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bFiltruj();" />-->
+<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bSelekce();" />
+<!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a> |-->
+<!--<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |-->
+<!--<img src="./img/gui/zoom_icon48.png"title="Vyhledat" />-->
+</div> <!--navigace-->
+
+<div id="contentDiv">
+    <div id="loading">Loading..</div> 
+<div id="searchFormDiv"><a href="#" onclick = "ukazForm('searchForm');"> [X] </a></div>
+<form id="searchForm" action="javascript:tVypisPy(spojeni, 'search')" method="get">
+  <input id = "searchInput" size="20"/>
+  <input type="submit" id="searchSubmit" value="vyhledat" />
+  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
+  <!--<img src="./img/lupa.gif"/>-->
+  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
+</form>
+<div id="twtFormDiv"><a href="#" onclick = "ukazForm('twtForm');"> [X] </a></div>
+<form id="twtForm" action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
+  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea> 
+  <br />
+  <span id = "pocet"></span>
+  <input type="submit" value="Odeslat" />
+  </form>
+<!--
+<form id="XXYXXY" action="javascript:tKonretniTwt(spojeni)" method="get">
+  <input id = "twtID" size="10"/>
+  <input type="submit" id="twtSubmit" value="..." />-->
+  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
+  <!--<img src="./img/lupa.gif"/>-->
+  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
+<!-- </form> -->
+
+<div id="time" style="padding:10px">Welcome to Titanium <script>setInterval(updateTime, 1000);</script></div>
+<div id="timeLine" style="padding:10px">
+    <script>
+        tVypisPy(spojeni,'timeline');        
+    </script>
+</div>
+
+<!--
+<div class="statusDiv"> <img src="./n0M.png" />
+    A static JSON Tree structure is used as input for this animation.
+            Clicking on a node should move the tree and center that node.
+            The centered node's children are displayed in a relations list in the right column.
+</div>-->
+
+<!--vizualizace-->
+<!--<a href="#" onclick = "vizualizuj(spojeni);"> VIZZZZ </a>-->
+<!--<div id="vizual"  onload="init();">-->
+<div id="jsn_vypis"></div>
+<div id="vizual">
+    <div id="container">
+        <div id="left-container">
+
+
+
+        <div class="text">
+        <h4>
+Tree Animation
+        </h4>
+
+            A static JSON Tree structure is used as input for this animation.<br /><br />
+            Clicking on a node should move the tree and center that node.<br /><br />
+            The centered node's children are displayed in a relations list in the right column.
+
+        </div>
+</div>
+        <div id="id-list"></div>
+
+
+<div style="text-align:center;"><a href="ex1.js">See the Example Code</a></div>      
+    <div id="center-container">
+        <div id="infovis" style="width: 90%;"></div>
+    </div>
+        <div id="right-container">
+
+            <div id="inner-details"></div>
+
+        </div>
+        <div id="log"></div>
+    </div>
+</div>
+</div> <!--content-->
+</div>  <!--centrovaci div-->
+</body>
+</html>

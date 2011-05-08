@@ -92,7 +92,7 @@ def vizData(twitter):
 #    return simplejson.dumps(jsn)
     tmp_jsn = ""
     dataList =  twitter.GetHomeTimeline(options = {'page':1})
-    for i in range(0,len(dataList)-1):
+    for i in range(0,len(dataList)):
 #        try:
             text='...'
 #            text = replaceUrl(dataList[i]['text'])
@@ -110,7 +110,7 @@ def vizData(twitter):
             sname = dataList[i]['user']['screen_name']
             imgurl = dataList[i]['user']['profile_image_url']
 #            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>  <a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
-            if(i == len(dataList)-2):
+            if(i == len(dataList)-1):
                 tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey": "'+text+ "  " +' ", "image":"'+imgurl+'"}, "children":[]}'
                 print "===== POSLEDNI ======"
             else:
