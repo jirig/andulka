@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-def test():
-  return "oo"
-
-# -*- coding: utf-8 -*-
 from curses import nonl
 from oauthtwitter import OAuthApi
 import pprint
@@ -109,13 +105,41 @@ def vizData(twitter):
 #            text = simplejson.JSONEncoder().encode(text)
             sname = dataList[i]['user']['screen_name']
             imgurl = dataList[i]['user']['profile_image_url']
-#            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>  <a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
-            if(i == len(dataList)-1):
-                tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey": "'+text+ "  " +' ", "image":"'+imgurl+'"}, "children":[]}'
-                print "===== POSLEDNI ======"
-            else:
-                tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey":"'+text+'", "image":"'+imgurl+'"}, "children":[]},'
-                print "===== E ======"
+
+            in_reply_id = dataList[i]["in_reply_to_status_id_str"]
+            # jestlize je status odpovedi na jiny - mel by se zobrazit i on
+            #neni odpovedi
+            if not(in_reply_id):
+    #            a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+" <a href='#' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'>| Reply |</a>  <a href='#' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> </span></div>"
+                if(i == len(dataList)-1):
+                    tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey": "'+text+ "  " +' ", "image":"'+imgurl+'"}, "children":[]}'
+                    print "===== POSLEDNI ======"
+                else:
+                    tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey":"'+text+'", "image":"'+imgurl+'"}, "children":[]},'
+                    print "===== E ======"
+            # je odpovedi
+            else:                
+                 rData = getTweet(twitter, in_reply_id)
+                 print("============ aoj ============")
+                 rSname = rData['user']['screen_name']
+                 rImgurl = rData['user']['profile_image_url']               
+                 rText = rData['text'].replace('"', '\'')
+                 rText = rText.replace('\\', '\\\\')
+                 rText = rText.replace('\n', " ")
+                 rText = replaceUrl(rText,1)
+                 rText = replaceTag(rText,1)
+                 rText = replaceScreenName(rText,1)
+                 rChild = ""                
+
+                 rChild = '{"id":"R'+str(in_reply_id)+'", "name":"'+rSname+'","data": {"tsomekey": "'+rText+ "  " +' ", "image":"'+rImgurl+'"}, "children":[]}'
+#                 rChild = '{"id":"Rahoj", "name":"REPLY","data": {"tsomekey": "REPLY"}, "children":[]}'
+                 print "=====REPLY -  REPLY ======"
+                 if(i == len(dataList)-1):
+                    tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey": "'+text+ "  " +' ", "image":"'+imgurl+'"}, "children":['+rChild+']}'
+                    print "===== POSLEDNI REPLY ======"
+                 else:
+                    tmp_jsn += '{"id":"'+statusid+'", "name":"'+sname+'","data": {"tsomekey":"'+text+'", "image":"'+imgurl+'"}, "children":['+rChild+']},'
+                    print "===== E  REPLY======"
 
     tmp_jsn = tmp_jsn.encode('utf-8')
     jsn = simplejson.loads('{"id": "ME", "name": "me","data": {},"children": [' +tmp_jsn+ ']}')
@@ -225,6 +249,12 @@ def getTwt(twitter, statusid):
     data=twitter.GetStatusById(statusid)
     print data
     return data['text']
+def getTweet(twitter, statusid):
+    print "============GET TWEET PRED========"
+    data=twitter.GetStatusById(str(statusid))
+#    print data
+    print "============GET TWEET PO========"
+    return data
 def retweet(twitter, statusid):
     data = twitter.Retweet(statusid)
     return data

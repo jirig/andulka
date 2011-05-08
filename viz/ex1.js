@@ -126,7 +126,7 @@ var json = jsn
               domElement.className = "stextem";
 
           }
-          else if (node._depth == 1) {
+          else if (node._depth >= 1) {
               style.fontSize = "0.8em";
               style.color = "#fff";
 //              style.display = "inline";
@@ -134,7 +134,7 @@ var json = jsn
                 if(domElement.className == "stextem")
                     domElement.className = "beztextu";
              
-          } else if(node._depth == 2){
+          } else if(node._depth > 3){
               style.fontSize = "0.7em";
               style.color = "#555";
               if(domElement.className == "stextem")
