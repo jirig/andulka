@@ -26,6 +26,7 @@ var replyStatusID = 0;
 var ukazF = 0;
 var ukazTF = 0; // urcuje zda je formular pro tweet (ne)zobrazen
 var ukazSF = 0;
+var temp_credentials;
 // pocet aktualne zobrazenych stranek z home_timeline
 var pageHomeCount = 1;
 </script>
@@ -100,7 +101,79 @@ def bFiltrujPy():
 
 
 </script>
+<!--Titanium-->
+<script>
+// Nastaveni okna aplikace / Titanium
 
+/*var menu = Titanium.UI.createMenu();
+var file = Titanium.UI.createMenuItem("File");
+file.addItem("Quit",function() {
+Titanium.App.exit();
+},"./n0M.png");
+file.addSeparatorItem();
+//var VIZ = Titanium.UI.createMenuItem("VIZ", function(){},iconURL="./n0M.png");
+menu.appendItem(file);
+//menu.appendItem(VIZ);
+Titanium.UI.setMenu(menu);-->
+*/
+// Tray ikonka a menu
+var tray = Titanium.UI.addTray(iconURL="./n0M.png", function(){
+//mWindow.show();
+var mWindow = Titanium.UI.getCurrentWindow();
+if(mWindow.isVisible()){
+mWindow.setVisible(false);
+}
+else{
+mWindow.setVisible(true);
+mWindow.focus();
+}
+//window.showInspector();
+});
+// Tooltip pro ikonku
+tray.setHint("Andulka");
+var trayMenu = Titanium.UI.createMenu();
+tray.setMenu(trayMenu);
+
+var quit = Titanium.UI.createMenuItem("Quit", function(){
+Titanium.App.exit();
+});
+trayMenu.appendItem(quit);
+var showW = Titanium.UI.createMenuItem("Zobraz", function(){
+var mWindow = Titanium.UI.getCurrentWindow();
+mWindow.setVisible(true);
+mWindow.focus();
+});
+trayMenu.appendItem(showW);
+
+var showTL = Titanium.UI.createMenuItem("Refresh Timeline", function(){
+var mWindow = Titanium.UI.getCurrentWindow();
+mWindow.setVisible(true);
+timeLine();
+mWindow.focus();
+});
+trayMenu.appendItem(showTL);
+var showVIZ = Titanium.UI.createMenuItem("Vizualizace", function(){
+var mWindow = Titanium.UI.getCurrentWindow();
+mWindow.setVisible(true);
+vizualizuj();
+mWindow.focus();
+});
+trayMenu.appendItem(showVIZ);
+//
+// notifikace
+//Titanium.UI.UserWindow.setTransparency(50)
+//var notif = Titanium.Notification.createNotification(Titanium.UI.createWindow());
+//notif.setTitle("New message");
+//notif.setMessage("How are you doing?");
+//notif.setTimeout(5)
+//notif.show();
+
+var globalObject;
+Titanium.API.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
+{
+alert("Got page initialized event!");
+});
+</script>
 <!--<h1>Ahoj</h1>-->
 <script>     
     spojeni = tConnectPy();
@@ -121,14 +194,21 @@ def bFiltrujPy():
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>-->
 <img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm');" />
 <!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bFiltruj();" />-->
-<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bSelekce();" />
-<!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');"> @ </a> |-->
-<!--<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'myFavs')" >Get My Favs</a> |-->
-<!--<img src="./img/gui/zoom_icon48.png"title="Vyhledat" />-->
+<!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bSelekce();" />-->
+<!--<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "ctiSoubor();" />-->
+<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "zapisDoSouboru();" />
+<img src="./img/gui/filter_icon48.png"title="ČTI ze souboru"  OnClick = "ctiSoubor('SOUBORTITAN.txt');" />
+
 </div> <!--navigace-->
 
 <div id="contentDiv">
-    <div id="loading">Loading..</div> 
+    <div id="loading">Loading..</div>
+    <div id="vyzva">
+       <form id="PINForm" action="javascript:prijmiPIN()" method="get">
+          <input id = "PINInput" size="20"/>
+          <input type="submit" id="PINSubmit" value="Ulož" />
+    </form> 
+    </div>
 <div id="searchFormDiv"><a href="#" onclick = "ukazForm('searchForm');"> [X] </a></div>
 <form id="searchForm" action="javascript:tVypisPy(spojeni, 'search')" method="get">
   <input id = "searchInput" size="20"/>
@@ -159,7 +239,10 @@ def bFiltrujPy():
     <div id ="timeLineOstatni">  </div>
     <script>
         //tVypisPy(spojeni,'timeline');
-        timeLine();
+        /*if (!(existujeSoubor("andulka.config"))) prvniLogin(spojeni) //timeLine();
+        else timeLine();
+        */
+      timeLine();
     </script>
 </div>
 

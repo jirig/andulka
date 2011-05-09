@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from curses import nonl
 from oauthtwitter import OAuthApi
 import pprint
 import re
@@ -12,6 +11,7 @@ OATOKEN="111682467-nymKCZGQxijr3a8U4keoiHCArRnkLqYiHjE8QwoE"
 OATOKENSECRET= "uSELZWESpSikb3Z0w8t3TGkByrlvW3kInpK7XNdV94"
 consumer_key = "qkhPVwSDfFp9qUr9KlVdPA"
 consumer_secret = "mUzfFwtes7UW854B7yW5rvb6RZE7Wy8OD5DMFrq3mCA"
+SIGNIN_URL = 'http://twitter.com/oauth/authenticate'
 
 def vypis(twitter, co, search = None, page = None):
   if((co == "timeline") or (co == "filtr")):
@@ -286,3 +286,14 @@ def splitIt(text):
 
 def jstest():
     return("jstest")
+
+def prvniLogin(twitter):
+    temp_credentials = twitter.getRequestToken()
+# User pastes this into their browser to bring back a pin number
+#    print(twitter.getAuthorizationURL(temp_credentials))
+    return twitter.getAuthorizationURL(temp_credentials)
+#    getAuthorizationURLgetAut(token, url=SIGNIN_URL):
+
+def prijmiPIN(twitter, temp_credentials, pin):
+    access_token = twitter.getAccessToken(temp_credentials, pin)
+    return access_token

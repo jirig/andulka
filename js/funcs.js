@@ -33,6 +33,13 @@ function reply(spojeni,sName, sID){
     area = window.document.getElementById("statusArea");
     area.innerHTML = "@" + sName + " ";
     replyStatusID = sID
+    // zobrazeni formulare pro tweet a schovani vyhledavaciho...
+    window.document.getElementById("searchForm").style.display='none';
+    window.document.getElementById('searchFormDiv').style.display='none';
+    ukazSF = 0; // nastavy priznak pro vyhledavaci formular na "schovan"
+    window.document.getElementById('twtForm').style.display='block';
+    window.document.getElementById('twtFormDiv').style.display='block';
+    ukazTF = 1;
 }
 
 function vizualizuj(){
@@ -86,6 +93,9 @@ function ukazForm(id){
         window.document.getElementById(id+'Div').style.display='none';
         window.document.getElementById(id).style.display='none';
         ukazTF = 0;
+          //po zavreni
+        replyStatusID =0; // zruseni odpovedniho ID
+        window.document.getElementById('statusArea').value = "" // vymyzani textu
    }
   }
   else{
@@ -93,6 +103,10 @@ function ukazForm(id){
         window.document.getElementById("twtForm").style.display='none';
         window.document.getElementById('twtFormDiv').style.display='none';
         ukazTF = 0;
+        //po zavreni
+        replyStatusID =0; // zruseni odpovedniho ID
+        window.document.getElementById('statusArea').value = "" // vymyzani textu
+
         window.document.getElementById(id).style.display='block';
         window.document.getElementById(id+'Div').style.display='block';
         ukazSF = 1;
@@ -379,7 +393,7 @@ function spamPr(text){
 function timeLine(){
     window.document.getElementById('timeLine').style.display = "block";
     a = "<h1>Timeline </h1><br />"
-    zajimaveTweety = "Zajímavé"
+    zajimaveTweety = "<h1>Zajímavé</h1>"
      dataList = twcm.vypis(spojeni, "filtr", page = pageHomeCount);
      for(i = 0; i < dataList.length; i++){
 
@@ -425,7 +439,8 @@ function timeLine(){
 //     if(dataList[2].truncated == false)
 //             alert("TRUNCATED")
     window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ--</a>'
-    window.document.getElementById('timeLineZajimave').innerHTML = zajimaveTweety +  '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ-</a>'
+    if(zajimaveTweety != "<h1>Zajímavé</h1>")
+        window.document.getElementById('timeLineZajimave').innerHTML = zajimaveTweety +  '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ-</a>'
 //      window.document.getElementById('timeLineOstatni').innerHTML = "mmm"
 //      window.document.getElementById('timeLineZajimave').innerHTML = "bbb"
 
@@ -447,3 +462,64 @@ function timeLine(){
                     a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZajimavy(\""+statusid+"\")'>Zs</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span></div>"
 
  */
+
+function zapisDoSouboru(filename, text){
+//   var contents = "Some contents to write";
+//   var filename = 'SOUBORTITAN.txt';
+   var userDir = Titanium.Filesystem.getApplicationDataDirectory();
+   var writeFile = Titanium.Filesystem.getFile(userDir, filename);
+   var writeStream = Titanium.Filesystem.getFileStream(writeFile);
+   writeStream.open(Titanium.Filesystem.MODE_WRITE);
+//   povedloSe = writeStream.write(contents);
+   povedloSe = writeStream.write(text);
+   writeStream.close();
+   if(povedloSe)   alert("zapsano")
+   else alert("error")
+}
+
+function ctiSoubor(filename){
+ var readContents;
+//   var filename = 'SOUBORTITANX.txt';
+   var userDir = Titanium.Filesystem.getApplicationDataDirectory();
+   var readFile = Titanium.Filesystem.getFile(userDir, filename);
+   if (readFile.exists()){
+      var readStream = Titanium.Filesystem.getFileStream(readFile);
+      readStream.open(Titanium.Filesystem.MODE_READ);
+      readContents = readStream.read(true);
+      readStream.close();
+      alert('contents = ' +  readContents);
+      Titanium.API.info('contents = ' +  readContents);
+      return true;
+   }
+    else {alert('NEEX');return false;}
+   
+}
+
+function existujeSoubor(filename){
+ var readContents;
+//   var filename = 'SOUBORTITANX.txt';
+   var userDir = Titanium.Filesystem.getApplicationDataDirectory();
+   var readFile = Titanium.Filesystem.getFile(userDir, filename);
+   if (readFile.exists()){
+      Titanium.API.info('contents = ' +  readContents);
+      return true;
+   }
+    else{
+        return false;
+    }
+
+}
+
+function prvniLogin(){
+    link = twcm.prvniLogin(spojeni);
+    Titanium.Desktop.openURL(link);
+    window.document.getElementById("vyzva").setAttribute("style", "display:block;");
+    //access_token = twitter.getAccessToken(temp_credentials, oauth_verifier)
+}
+function prijmiPIN(){
+    pin = window.document.getElementById("PINInput").value
+    accesToken = twcm.prijmiPIN(spojeni,temp_credentials, pin);
+    text =  accesToken.oauth_token + "\n" + accesToken.oauth_token_secret
+    zapisDoSouboru("andulka.config", text)
+
+}

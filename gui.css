@@ -83,6 +83,9 @@ body{
 #contentDiv{
     margin-top: 70px;
 }
+#vyzva{
+    display:none;
+}
 .statusDiv{
     background-color: #ddd;
     text-align: left;
