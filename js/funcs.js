@@ -394,9 +394,12 @@ function timeLine(){
     window.document.getElementById('timeLine').style.display = "block";
     a = "<h1>Timeline </h1><br />"
     zajimaveTweety = "<h1>Zajímavé</h1>"
-     dataList = twcm.vypis(spojeni, "filtr", page = pageHomeCount);
+//    alert("TIMELINE");
+Titanium.API.info('**************************************XXXX***************************');
+    dataList = twcm.vypis(spojeni, "filtr", null , pageHomeCount);
+    Titanium.API.info('-PRED###################### -V-Y-P-I-S');
      for(i = 0; i < dataList.length; i++){
-
+        Titanium.API.info('-p-o- -V-Y-P-I-S')
           rawText = dataList[i].text  //  "cisty text" tweetu pro potrebu vypoctu BF
           screenName = dataList[i].user.screen_name
           avatar = dataList[i].user.profile_image_url
@@ -411,7 +414,9 @@ function timeLine(){
           }
           // jaka je pravdepodobnost ze je tweet spam
            spam = spamPr(rawText)
+           //  // // //
 //           dbPridatSpam(rawText)
+           //  // // //
            text = twcm.replaceTag(text,0)
            text = twcm.replaceScreenName(text,0)
            statusid = dataList[i].id_str
@@ -430,17 +435,18 @@ function timeLine(){
            else{ // zajimave
             if(favorited)
 //                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
-                      zajimaveTweety += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
+                      zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
             else
 //                    a += "<div class='statusDiv' style='color:green;'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
-                      zajimaveTweety += "<div class='statusDiv' style='color:green;'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+                      zajimaveTweety += "<div class='statusDiv zajStat' style='color:green;'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
            }
      }
 //     if(dataList[2].truncated == false)
 //             alert("TRUNCATED")
-    window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ--</a>'
+//    window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ--</a>'
+     window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a id="starsi" name = "starsi" href="#starsi"id="starsi" name = "starsi" href="#starsi" onclick="starsiTwty();">--STARŠÍ--</a>'
     if(zajimaveTweety != "<h1>Zajímavé</h1>")
-        window.document.getElementById('timeLineZajimave').innerHTML = zajimaveTweety +  '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ-</a>'
+        window.document.getElementById('timeLineZajimave').innerHTML = zajimaveTweety +  '<br /><a href="#" onclick="starsiTwty();">--STARŠÍ-</a>'
 //      window.document.getElementById('timeLineOstatni').innerHTML = "mmm"
 //      window.document.getElementById('timeLineZajimave').innerHTML = "bbb"
 
@@ -501,7 +507,7 @@ function existujeSoubor(filename){
    var userDir = Titanium.Filesystem.getApplicationDataDirectory();
    var readFile = Titanium.Filesystem.getFile(userDir, filename);
    if (readFile.exists()){
-      Titanium.API.info('contents = ' +  readContents);
+      Titanium.API.info('##################### existuje #####');
       return true;
    }
     else{
@@ -511,15 +517,52 @@ function existujeSoubor(filename){
 }
 
 function prvniLogin(){
-    link = twcm.prvniLogin(spojeni);
+    temp_credentials = twcm.getReqToken(spojeni);
+    link = twcm.prvniLogin(spojeni, temp_credentials);
     Titanium.Desktop.openURL(link);
-    window.document.getElementById("vyzva").setAttribute("style", "display:block;");
+    window.document.getElementById("vyzva").setAttribute("style", "display:block;");    
     //access_token = twitter.getAccessToken(temp_credentials, oauth_verifier)
 }
 function prijmiPIN(){
+//     alert("PrijmiPIN - ZACATEK");
     pin = window.document.getElementById("PINInput").value
-    accesToken = twcm.prijmiPIN(spojeni,temp_credentials, pin);
+    window.document.getElementById("vyzva").setAttribute("style", "display:hidden;");
+    alert(pin)
+    accesToken = twcm.prijmiPIN(spojeni, temp_credentials, pin);
+    OAT = accesToken.oauth_token;
+    OATS = accesToken.oauth_token_secret;
     text =  accesToken.oauth_token + "\n" + accesToken.oauth_token_secret
-    zapisDoSouboru("andulka.config", text)
+    alert(text)
+    zapisDoSouboru(configAppFile, text)
+    spojeni = twcm.connectToTwNew(OAT, OATS);
+    timeLine();
+//    alert( accesToken)
+//    zapisDoSouboru("andulka.config", accesToken)
+//    alert("PrijmiPIN - KONEC");
 
+}
+
+function nactiTokeny(){
+ var readContents;
+//   var filename = 'SOUBORTITANX.txt';
+   var userDir = Titanium.Filesystem.getApplicationDataDirectory();
+   var readFile = Titanium.Filesystem.getFile(userDir, configAppFile);
+   if (readFile.exists()){
+      var readStream = Titanium.Filesystem.getFileStream(readFile);
+      readStream.open(Titanium.Filesystem.MODE_READ);     
+      OAT = readStream.readLine().toString();
+      OATS = readStream.readLine().toString();
+      readStream.close();
+//      alert('OAT = ' + OAT + 'OATS = '+ OATS);
+      Titanium.API.info('OAT = ' + OAT + '  OATS = '+ OATS);
+      return true;
+   }
+    else {alert('NEEX NACTI_TOKENY');return false;}
+
+}
+
+function starsiTwty(){
+     pageHomeCount =pageHomeCount + 1;
+//     alert(pageHomeCount)
+     timeLine();
 }

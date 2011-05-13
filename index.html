@@ -29,6 +29,10 @@ var ukazSF = 0;
 var temp_credentials;
 // pocet aktualne zobrazenych stranek z home_timeline
 var pageHomeCount = 1;
+var configAppFile = "andulka.config";
+
+var OAT;
+var OATS;
 </script>
 <!--python fce-->
 <script type="text/python">
@@ -176,7 +180,7 @@ alert("Got page initialized event!");
 </script>
 <!--<h1>Ahoj</h1>-->
 <script>     
-    spojeni = tConnectPy();
+    //spojeni = tConnectPy();
 </script>   
 <div id="centr">
 <div class="navigace">
@@ -196,14 +200,17 @@ alert("Got page initialized event!");
 <!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bFiltruj();" />-->
 <!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bSelekce();" />-->
 <!--<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "ctiSoubor();" />-->
-<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "zapisDoSouboru();" />
-<img src="./img/gui/filter_icon48.png"title="ČTI ze souboru"  OnClick = "ctiSoubor('SOUBORTITAN.txt');" />
+<!--<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "zapisDoSouboru();" />
+<img src="./img/gui/filter_icon48.png"title="ČTI ze souboru"  OnClick = "ctiSoubor('SOUBORTITAN.txt');" />-->
 
 </div> <!--navigace-->
 
 <div id="contentDiv">
     <div id="loading">Loading..</div>
     <div id="vyzva">
+        Dobrý den, otevřeli jste Andulku poprvé, je tedy nutné zaregistrovat ji pro Váš účet u Twitteru.
+        Po přihlášení se v internetovém prohlížeči, překopírujte vygenerovaný PIN do přichystaného políčka v Andulce.
+        Děkuji a přeji příjemné používání.
        <form id="PINForm" action="javascript:prijmiPIN()" method="get">
           <input id = "PINInput" size="20"/>
           <input type="submit" id="PINSubmit" value="Ulož" />
@@ -233,16 +240,28 @@ alert("Got page initialized event!");
   <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
 <!-- </form> -->
 
-<div id="time" style="padding:10px">Welcome to Titanium <script>setInterval(updateTime, 1000);</script></div>
 <div id="timeLine" style="padding:10px">
     <div id ="timeLineZajimave">  </div>
     <div id ="timeLineOstatni">  </div>
     <script>
         //tVypisPy(spojeni,'timeline');
-        /*if (!(existujeSoubor("andulka.config"))) prvniLogin(spojeni) //timeLine();
-        else timeLine();
-        */
-      timeLine();
+        //if (existujeSoubor("andulka.config")){
+          if (existujeSoubor(configAppFile)){
+            //spojeni = tConnectPy();
+            nactiTokeny();
+            spojeni = twcm. connectToTwt(OAT, OATS);
+            timeLine();
+        }
+        else 
+        {
+            spojeni = twcm.firstConn();
+            prvniLogin(spojeni);
+            //nactiTokeny();
+            //spojeni = twcm.connectToTwNew(OAT, OATS, temp_credentials);
+           // timeLine();
+        }
+        
+      //timeLine();
     </script>
 </div>
 

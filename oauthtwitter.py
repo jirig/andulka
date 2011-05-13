@@ -251,7 +251,9 @@ class OAuthApi():
 
               Return: The home timeline in dict format
         '''
+        
         pages = int(options['page'])
+        print("PAGEEEEEES ::::::::: " + str(pages))
         if(pages==1):
            return self.ApiCall("statuses/home_timeline", "GET", options)
 #    	return self.ApiCall("statuses/home_timeline", "GET", options)

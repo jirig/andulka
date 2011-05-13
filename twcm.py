@@ -169,11 +169,31 @@ def vizData(twitter):
 
 def connectToTw():
   twitter = OAuthApi(consumer_key, consumer_secret)
-  temp_credentials = twitter.getRequestToken()
+#  temp_credentials = twitter.getRequestToken()
   twitter = OAuthApi(consumer_key, consumer_secret, OATOKEN, OATOKENSECRET)
+  print "====================SPOJENO"
+  return twitter
+#funkce je volana po spuseteni kleinta pro navazani spojeni v pokud nejde o prvni spojeni (celkove)
+def connectToTwt(OAT, OATS):
+#  twitter = OAuthApi(consumer_key, consumer_secret)
+#  temp_credentials = twitter.getRequestToken()
+#  print("TOKEN1:::")
+#  print(OAT)
+#  print("TOKEN1::")
+  twitter = OAuthApi(consumer_key, consumer_secret, OAT, OATS)
+  print "===**=================SPOJENO"
+  return twitter
+def connectToTwNew(OAT, OATS): 
+  twitter = OAuthApi(consumer_key, consumer_secret, OAT, OATS)
   print "=====================SPOJENO"
   return twitter
-  
+
+def firstConn():
+  twitter = OAuthApi(consumer_key, consumer_secret)
+#  temp_credentials = twitter.getRequestToken()
+#  twitter = OAuthApi(consumer_key, consumer_secret, OATOKEN, OATOKENSECRET)
+  print "=====================SPOJENO"
+  return twitter
 def publishStatus(twitter, text, statusID = None, input_encoding='utf8'):
 #  twitter.UpdateStatus(text)
     if(statusID):
@@ -287,12 +307,12 @@ def splitIt(text):
 def jstest():
     return("jstest")
 
-def prvniLogin(twitter):
+def getReqToken(twitter):
     temp_credentials = twitter.getRequestToken()
-# User pastes this into their browser to bring back a pin number
-#    print(twitter.getAuthorizationURL(temp_credentials))
+    return temp_credentials
+def prvniLogin(twitter, temp_credentials):
+    #vraci adresu pro prohlizec, kde bude potvrzeno pouzivani klienta
     return twitter.getAuthorizationURL(temp_credentials)
-#    getAuthorizationURLgetAut(token, url=SIGNIN_URL):
 
 def prijmiPIN(twitter, temp_credentials, pin):
     access_token = twitter.getAccessToken(temp_credentials, pin)
