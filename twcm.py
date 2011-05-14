@@ -25,8 +25,8 @@ def vypis(twitter, co, search = None, page = None):
 #    dataList =  twitter.GetConcretUserFavs()
   elif(co == "mentions"):
     dataList =  twitter.GetMentions()
-  elif(co == "search"):
-     dataList = twitter.GetSearchResult(search)
+  elif((co == "search") or (co == "searchf")):
+     dataList = twitter.GetSearchResult(options = {'q':search,'page':page})
 #  pomocna promenna pro ulozeni a vypis statusExpecting , delimiter: line 1 u
   a = ""
   # pomocna promenna pro slozeni json dat pro vyzualizaci pomoci thejit
@@ -34,7 +34,7 @@ def vypis(twitter, co, search = None, page = None):
 #vypis pro vysledky hledani
   if(co == "search"):
 #        print dataList["results"][1]
-        a=u"<h1>Vyhledávání</h1>"
+        a=u""
         for i in range(0,len(dataList["results"])):
             try:
                 text=replaceUrl(((dataList['results'][i]['text'])),0)
@@ -45,7 +45,8 @@ def vypis(twitter, co, search = None, page = None):
                 a += "<div class='statusDiv'><img src='"+dataList['results'][i]['profile_image_url']+"'/><b>"+dataList['results'][i]['from_user']+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br />" + ((dataList['results'][i]['created_at'])) +"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<br /></div>"
             except:
                 a = "<b> Žádný výsledek nebyl nalezen</b>"
-
+  elif(co == "searchf"):
+      return dataList
   elif(co == "filtr"):
 #      for i in range(0,len(dataList)):
 #        a+= dataList[i]['user']['screen_name'] + " "+ unicode(dataList[i]['text']) + " "

@@ -369,11 +369,11 @@ class OAuthApi():
     	#return self.ApiCall("favorites", "GET", options) 
     	return tmplist
 
-    def GetSearchResult(self, search, options={}):
+    def GetSearchResult(self, search = None, options={}):
 
 #        TODO: 1) omezeni na 140 znaku
 #
-        options = {'q' : search}
+#        options = {'q' : search}
         json =  self._FetchUrl("http://search.twitter.com/search.json", "get", options)
         return simplejson.loads(json)
 #        self.ApiCall("statuses/update", "POST", options)

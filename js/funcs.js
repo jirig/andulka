@@ -30,6 +30,7 @@ function otevriOdkaz(link)
 }
 
 function reply(spojeni,sName, sID){
+    document.getElementById('statusArea').focus();
     area = window.document.getElementById("statusArea");
     area.innerHTML = "@" + sName + " ";
     replyStatusID = sID
@@ -571,4 +572,85 @@ function openDB(){
 
 function closeDB(){
     db.close();
+}
+
+function search(){
+    schovejViz();
+    window.document.getElementById('popisZobrazeni').innerHTML = "<h1>Vyhledávání</h1>";
+    window.document.getElementById('timeLine').style.display = "block";
+    slovo = window.document.getElementById("searchInput").value;
+    twcm.vypis(spojeni, "searchf", slovo, pageHomeCount)
+    a = "<h3>Všechny tweety</h3>"
+    if(pageHomeCount > 1)
+        a = window.document.getElementById('timeLineOstatni').innerHTML    
+    zajimaveTweety = "<h3>Zajímavé</h3>"
+    Titanium.API.info('**************************************XXXX***************************');
+    dataList = twcm.vypis(spojeni, "searchf", slovo, pageHomeCount);
+
+     for(i = 0; i < dataList['results'].length; i++){
+        Titanium.API.info('-p-o- -V-Y-P-I-S')
+          rawText = dataList['results'][i].text  //  "cisty text" tweetu pro potrebu vypoctu BF
+          screenName = dataList['results'][i].from_user;
+          avatar = dataList['results'][i].profile_image_url
+        // tweet je RT a zkraceny - nahradim text puvodnim nezkracenym
+          if(dataList['results'][i].retweeted_status && dataList['results'][i].truncated == true){
+            text = twcm.replaceUrl(dataList['results'][i].retweeted_status.text,0)
+            rawText = dataList['results'][i].retweeted_status.text
+            alert("TRUNCATED ... "+ text)
+          }
+          else{
+              text =  twcm.replaceUrl(dataList['results'][i].text,0)
+          }
+          // jaka je pravdepodobnost ze je tweet spam
+           spam = spamPr(rawText)
+           //  // // //
+//           dbPridatSpam(rawText)
+           //  // // //
+           text = twcm.replaceTag(text,0)
+           text = twcm.replaceScreenName(text,0)
+           statusid = dataList['results'][i].id_str
+           datum  = dataList['results'][i].created_at
+           favorited = dataList['results'][i].favorited
+
+
+
+           if(spam > 0.99){
+            if(favorited) // nezajimavy
+                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
+            else
+                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+           }
+
+           else{ // zajimave
+            if(favorited){
+                    a += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
+                      zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
+            }
+            else{
+                    a += "<div class='statusDiv  zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+                      zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+            }
+           }
+     }
+//     if(dataList[2].truncated == false)
+//             alert("TRUNCATED")
+//    window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ--</a>'
+     window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a id="starsi" name = "starsi" href="#starsi"id="starsi" name = "starsi" href="#starsi" onclick="starsiTwtySrch();">--STARŠÍ--</a>'
+    if(zajimaveTweety != "<h3>Zajímavé</h3>")
+        window.document.getElementById('timeLineZajimave').innerHTML = zajimaveTweety +  '<br /><a href="#" onclick="starsiTwtySrch();">--STARŠÍ-</a>'
+    location.href = '#timeLine';
+}
+
+function starsiTwtySrch(){
+    pageHomeCount =pageHomeCount + 1;
+    search();
+}
+
+function skryjZajimave(){
+    window.document.getElementById('timeLineZajimave').setAttribute("style","display:none");
+     window.document.getElementById('skrytZajimave').setAttribute("onclick","zobrazZajimave()");
+}
+function zobrazZajimave(){
+     window.document.getElementById('timeLineZajimave').setAttribute("style","display:block");
+     window.document.getElementById('skrytZajimave').setAttribute("onclick","skryjZajimave()");
 }

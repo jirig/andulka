@@ -192,18 +192,18 @@ alert("Got page initialized event!");
 <div id="centr">
 <div class="navigace">
    
-<img src="./img/gui/pencil_icon48.png" title="Nový twít" onclick = "ukazForm('twtForm');"  style="font-size: 48px; border-right: solid 1px #aaa; padding-right: 15px;" />
+<img src="./img/gui/pencil_icon48.png" title="Nový twít" onclick = "ukazForm('twtForm'); document.getElementById('statusArea').focus();"  style="font-size: 48px; border-right: solid 1px #aaa; padding-right: 15px;" />
 
 <!--<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');schovejViz();" />-->
-<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "pageHomeCount = 1; timeLine();schovejViz();" />
+<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "pageHomeCount = 1; timeLine();schovejViz(); location.href = '#timeLine';" />
 <img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
-<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz();" />
+<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz(); pageHomeCount = 1;" />
 <!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
 
 <!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
-<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz();" />
+<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz(); pageHomeCount = 1; location.href = '#timeLine';" />
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>-->
-<img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm');" />
+<img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm'); document.getElementById('searchInput').focus();" />
 <!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bFiltruj();" />-->
 <!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bSelekce();" />-->
 <!--<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "ctiSoubor();" />-->
@@ -224,7 +224,8 @@ alert("Got page initialized event!");
     </form> 
     </div>
 <div id="searchFormDiv"><a href="#" onclick = "ukazForm('searchForm');"> [X] </a></div>
-<form id="searchForm" action="javascript:tVypisPy(spojeni, 'search'); schovejViz();" method="get">
+<!--<form id="searchForm" action="javascript:tVypisPy(spojeni, 'search'); schovejViz();" method="get">-->
+<form id="searchForm" action="javascript:pageHomeCount = 1; search();" method="get">
   <input id = "searchInput" size="20"/>
   <input type="submit" id="searchSubmit" value="vyhledat" />
   <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
@@ -249,7 +250,8 @@ alert("Got page initialized event!");
 
 <div id="timeLine" style="padding:10px">
     <h1 id="popisZobrazeni"></h1>
-    <div id ="timeLineZajimave">  </div>
+    <a  id ="skrytZajimave" href="#" onclick="skryjZajimave()" title="skryje předřazený výpis zajímavých tweerů (boudou vyznačeny v celkovém výpisu)"> [-] Skrýt zajímavé</a>
+    <div id ="timeLineZajimave"> </div>
     <div id ="timeLineOstatni">  </div>
     <script>
         //tVypisPy(spojeni,'timeline');
