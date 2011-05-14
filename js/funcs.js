@@ -26,7 +26,7 @@ function vycisti(id)
 }
 function otevriOdkaz(link)
 {
-    Titanium.Platform.openURL(link);
+    Titanium.Platform.openURL(link);    
 }
 
 function reply(spojeni,sName, sID){
@@ -147,12 +147,11 @@ while (resultSet.isValidRow())
 }
 function bFiltruj(){
 
-   var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(
-    Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+//   var db = Titanium.Database.openFile(Titanium.Filesystem.getFile( Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
     
     db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
     //alert(twcm.bFiltruj(spojeni));
-    arrayPy = twcm.bFiltruj(spojeni);
+    arrayPy = twcm.bFiltruj(spojeni, pageHomeCount);
     hm = ""
     a = 0
     while(arrayPy.length > 0){
@@ -200,7 +199,7 @@ function dbPridatZajimavy(statusId){
 
 
     // spojeni s DB
-     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));   
+//     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
      db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
      
     text = twcm.getTwt(spojeni, statusId)
@@ -227,7 +226,7 @@ function dbPridatZaj(text){
 
 
     // spojeni s DB
-     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+//     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
      db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
 
 
@@ -253,7 +252,7 @@ function dbPridatSpam(text){
 
 
     // spojeni s DB
-     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+//     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
      db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
 
     forSplit = twcm.replaceNonAlpha(text)
@@ -276,7 +275,7 @@ function dbPridatSpam(text){
 function bSelekce(){
     var pZ = 1.0;
     var pN = 1.0;
-     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+//     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
      db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
     // natahnuti timeline se vsim vsudy do dataList v JSON
     dataList = twcm.vypis(spojeni, "filtr");
@@ -313,20 +312,23 @@ function dbSpamWord(slovo){
     var zajimP; // pomer zajimPocet/pocetZajimSlov
     var pravSpam; // pravdepodobnost ze slovo je spam
 
-    var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+//    var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
     
-    resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ? and pocetN > 0", slovo);
+    resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ? and pocetN > 1", slovo);
+//    resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ?", slovo);
     spamPocet =  resultSet.fieldByName('pocetN');
-    resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ? and pocetZ > 0", slovo);
+//    pocetZ > 1 protoze pokud je slovo pridavano do db da se vzdy 1  ne 0
+    resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ? and pocetZ > 1", slovo);
+    resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ?", slovo);
     zajimPocet =  resultSet.fieldByName('pocetZ');
     if(spamPocet == 0 || spamPocet == null) spamPocet = 1;
     if(zajimPocet == 0 || zajimPocet == null) zajimPocet = 1;
 //    alert(spamPocet);
-    resultSet = db.execute("SELECT * FROM slovo WHERE pocetN > 0");
+    resultSet = db.execute("SELECT * FROM slovo WHERE pocetN > 1");
 //    resultSet = db.execute("SELECT SUM(pocetN) FROM slovo");
     pocetSpamSlov = parseInt(resultSet.fieldCount())
 //    pocetSpamSlov = resultSet
-    resultSet = db.execute("SELECT * FROM slovo WHERE pocetZ > 0");
+    resultSet = db.execute("SELECT * FROM slovo WHERE pocetZ > 1");
 //    resultSet = db.execute("SELECT SUM(pocetZ) FROM slovo as suma");
     pocetZajimSlov =  parseInt(resultSet.fieldCount())
 //    pocetZajimSlov = parseInt(resultSet.fieldByName("suma"))
@@ -334,7 +336,7 @@ function dbSpamWord(slovo){
 
     spamP = spamPocet/pocetSpamSlov;
     zajimP = zajimPocet/pocetZajimSlov;
-    pravSpam = spamP/zajimP;
+    pravSpam = spamP/(zajimP + spamP);
 //    alert("dbSpamWord pravSpam: "+pravSpam + " pSS: " +pocetSpamSlov +" pZS "+pocetZajimSlov  );
     if(pravSpam < 0.01)
             pravSpam = 0.01
@@ -381,9 +383,14 @@ function spamPr(text){
      while(wordArray.length > 0){
             tmpSlovo = wordArray.pop()
             spamPravSlovo = dbSpamWord(tmpSlovo)
+
             pZ *= spamPravSlovo
-            pN *= 1 - spamPravSlovo
+            pN *= 1.0 - spamPravSlovo
         }
+//        if(pZ < 0.01) pZ = 0.01;
+//        if(pN < 0.01) pN = 0.01;
+//        if(pZ > 0.99) pz = 0.99;
+//        if(pN > 0.99) pz = 0.99;
     spamPrav = pZ/(pZ+pN);
 //    spamPrav = pN/(pN-pZ);
 //    alert(spamPrav + " pZ: " + pZ + " pN: " + pN);
@@ -392,12 +399,17 @@ function spamPr(text){
 
 function timeLine(){
     window.document.getElementById('timeLine').style.display = "block";
-    a = "<h1>Timeline </h1><br />"
-    zajimaveTweety = "<h1>Zajímavé</h1>"
+    a = "<h3>Všechny tweety</h3>"
+    if(pageHomeCount > 1)
+        a = window.document.getElementById('timeLineOstatni').innerHTML
+//    alert(":::" + a +":::")
+    window.document.getElementById('popisZobrazeni').innerHTML = "Timeline"
+    zajimaveTweety = "<h3>Zajímavé</h3>"
 //    alert("TIMELINE");
-Titanium.API.info('**************************************XXXX***************************');
+    Titanium.API.info('**************************************XXXX***************************');
     dataList = twcm.vypis(spojeni, "filtr", null , pageHomeCount);
     Titanium.API.info('-PRED###################### -V-Y-P-I-S');
+    
      for(i = 0; i < dataList.length; i++){
         Titanium.API.info('-p-o- -V-Y-P-I-S')
           rawText = dataList[i].text  //  "cisty text" tweetu pro potrebu vypoctu BF
@@ -433,41 +445,26 @@ Titanium.API.info('**************************************XXXX*******************
            }
 
            else{ // zajimave
-            if(favorited)
-//                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
+            if(favorited){
+                    a += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
                       zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
-            else
-//                    a += "<div class='statusDiv' style='color:green;'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
-                      zajimaveTweety += "<div class='statusDiv zajStat' style='color:green;'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+            }
+            else{
+                    a += "<div class='statusDiv  zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+                      zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+            }
            }
      }
 //     if(dataList[2].truncated == false)
 //             alert("TRUNCATED")
 //    window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a href="#" onclick="  pageHomeCount +=1; timeLine();">--STARŠÍ--</a>'
      window.document.getElementById('timeLineOstatni').innerHTML = a + '<br /><a id="starsi" name = "starsi" href="#starsi"id="starsi" name = "starsi" href="#starsi" onclick="starsiTwty();">--STARŠÍ--</a>'
-    if(zajimaveTweety != "<h1>Zajímavé</h1>")
+    if(zajimaveTweety != "<h3>Zajímavé</h3>")
         window.document.getElementById('timeLineZajimave').innerHTML = zajimaveTweety +  '<br /><a href="#" onclick="starsiTwty();">--STARŠÍ-</a>'
 //      window.document.getElementById('timeLineOstatni').innerHTML = "mmm"
 //      window.document.getElementById('timeLineZajimave').innerHTML = "bbb"
 
 }
-
-/*
-             text=""
-            text = replaceUrl(dataList[i]['text'],0)
-            text = replaceTag(text,0)
-            text = replaceScreenName(text,0)
-            statusid = dataList[i]['id_str']
-            favorited = dataList[i]['favorited']
-#            if(co=="myFavs"):
-#                a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br />" + text + "<br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT</a>"+"<img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
-#            else:
-            if(favorited):
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> Reply |</a><img src='./img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span></div>"
-            else:
-                    a += "<div class='statusDiv'><img src='"+dataList[i]['user']['profile_image_url']+"'/><b>"+dataList[i]['user']['screen_name']+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+dataList[i]['created_at']+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i]['user']['screen_name']+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZajimavy(\""+statusid+"\")'>Zs</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span></div>"
-
- */
 
 function zapisDoSouboru(filename, text){
 //   var contents = "Some contents to write";
@@ -535,6 +532,7 @@ function prijmiPIN(){
     alert(text)
     zapisDoSouboru(configAppFile, text)
     spojeni = twcm.connectToTwNew(OAT, OATS);
+    openDB();
     timeLine();
 //    alert( accesToken)
 //    zapisDoSouboru("andulka.config", accesToken)
@@ -565,4 +563,12 @@ function starsiTwty(){
      pageHomeCount =pageHomeCount + 1;
 //     alert(pageHomeCount)
      timeLine();
+}
+
+function openDB(){
+     db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
+}
+
+function closeDB(){
+    db.close();
 }

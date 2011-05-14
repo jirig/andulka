@@ -253,22 +253,37 @@ class OAuthApi():
         '''
         
         pages = int(options['page'])
-        print("PAGEEEEEES ::::::::: " + str(pages))
-        if(pages==1):
-           return self.ApiCall("statuses/home_timeline", "GET", options)
-#    	return self.ApiCall("statuses/home_timeline", "GET", options)
-        else:            
-            tmplist = []
-            for n in range(1,pages+1):
-              options = {'page':n}
-              appendix = self.ApiCall("statuses/home_timeline", "GET", options)
-              if appendix != []:
-                tmplist.extend(appendix)
-
-              else:
-                break
-            return tmplist
-    
+        print("PAGEEEEEES ::::::::: " + str(pages))        
+        return self.ApiCall("statuses/home_timeline", "GET", options)
+#     def GetHomeTimeline(self, options={}):
+#        '''Get the home timeline. Unlike friends timeline it also contains retweets
+#
+#              Args:
+#              options:
+#                    A dict of options for the statuses/home_timeline call.
+#                    See the link below for what options can be passed
+#                    http://apiwiki.twitter.com/Twitter-REST-API-Method%3A-statuses-home_timeline
+#
+#              Return: The home timeline in dict format
+#        '''
+#
+#        pages = int(options['page'])
+#        print("PAGEEEEEES ::::::::: " + str(pages))
+#        if(pages==1):
+#           return self.ApiCall("statuses/home_timeline", "GET", options)
+##    	return self.ApiCall("statuses/home_timeline", "GET", options)
+#        else:
+#            tmplist = []
+#            for n in range(1,pages+1):
+#              options = {'page':n}
+#              appendix = self.ApiCall("statuses/home_timeline", "GET", options)
+#              if appendix != []:
+#                tmplist.extend(appendix)
+#
+#              else:
+#                break
+#            return tmplist
+#
     def GetUserTimeline(self, options={}):
     	'''Get the user timeline. These are tweets just by a user, and do not contain retweets
     	

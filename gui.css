@@ -126,6 +126,7 @@ body{
 /*trida pro zajimave prispevky*/
 .zajStat{
     background-color: red;
+    color: blue;
 }
 .rawTextclass{
     color:#00c;

@@ -212,9 +212,9 @@ def replaceUrl(text,viz):
 #            text = text.replace(word,'<a href="javascript:otevriOdkaz('+m.group(1)+')">'+m.group(1)+'</a>')
 #             text = text.replace(word,"<a href='#' onclick='Titanium.Desktop.openURL(\'"+m.group(1)+"\');'>"+m.group(1)+"</a>")
            if(viz):
-               text = text.replace(word,'<a href=\\"#\\" onclick=\\"Titanium.Desktop.openURL(\''+m.group(1)+'\');\\">'+m.group(1)+'</a>')
+               text = text.replace(word,'<a href=\\"#\\" onclick=\\"Titanium.Desktop.openURL(\''+m.group(1)+'\')\\">'+m.group(1)+'</a>')
            else:
-               text = text.replace(word,'<a href="#" onclick="Titanium.Desktop.openURL(\''+m.group(1)+'\');">'+m.group(1)+'</a>')
+               text = text.replace(word,'<a href="#" onclick="Titanium.Desktop.openURL(\''+m.group(1)+'\')">'+m.group(1)+'</a>')
               
     return text
 
@@ -281,10 +281,11 @@ def retweet(twitter, statusid):
 
 ### Funkce vztahujici se k filtrpovani ###
 
-def bFiltruj(twitter):
+def bFiltruj(twitter, page = None):
 #    b = bayes.Bayes()
-    text = vypis(twitter, co = "filtr")
-    
+    if(page == None):
+        page = 1
+    text = vypis(twitter, page = page, co = "filtr")
 #    b.parseData(text)
     
     # a co SPESL ZNAKY JAKO PREVRACENE UVOZOVKY A jine UNICODE...?
