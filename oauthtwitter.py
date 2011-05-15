@@ -399,6 +399,17 @@ class OAuthApi():
         print "Retweet: "+statusid
         self.ApiCall("statuses/retweet/"+statusid, "POST")
 
+    def StartFollow(self,username):
+        # zaradi  uzivatele na zaklade @username do sledovanych
+        options = {'screen_name' :  username}
+        self.ApiCall("friendships/create/"+user_id, "POST", options)
+        return
+    def StopFollow(self, username):
+        #  odstrani uzivatele na zaklade @username ze sledovanych
+        options = {'screen_name' :  username}
+        self.ApiCall("friendships/desroy/"+user_id, "POST", options)
+        return
+
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------       
 #------------------------------------------------------------------------------

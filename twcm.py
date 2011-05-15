@@ -319,3 +319,10 @@ def prvniLogin(twitter, temp_credentials):
 def prijmiPIN(twitter, temp_credentials, pin):
     access_token = twitter.getAccessToken(temp_credentials, pin)
     return access_token
+
+def startFollow(twitter, username):
+    twitter.StartFollow(username)
+
+def stopFollow(twitter, username):
+    twitter.StopFollow(username)
+

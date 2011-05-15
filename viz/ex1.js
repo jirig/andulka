@@ -121,7 +121,7 @@ var json = jsn
 //          text v základním robrazeni
           if (node._depth < 1) {
               style.fontSize = "0.8em";
-              style.color = "yellow";
+//              style.color = "yellow";
 //              style.display = "inline";
               domElement.className = "stextem";
 

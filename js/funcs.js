@@ -62,6 +62,9 @@ function vizualizuj(){
 //    window.document.getElementById('vizual').setAttribute("style","display:block")
 //    window.document.getElementById('timeLine').setAttribute("style","visibility:hidden")
 //    window.document.getElementById('vizual').setAttribute("style","visibility:visible")
+//    window.document.getElementsByTagName('body')[0].setAttribute("onresize", "init(jsn)")
+
+    // vykresleni grafu
     init(jsn);
     nTL = document.createElement('div');
 
@@ -70,8 +73,8 @@ function vizualizuj(){
     nTL.setAttribute('id',did);
      nTL.setAttribute('style','display:none');
     nTL.innerHTML = obsahDivTimeLine
-
     otec.appendChild(nTL);
+//     window.document.getElementById('body').setAttribute("onresize", "alert('RESIZE')")
 }
 
 function dalsiTwity(){
@@ -613,12 +616,12 @@ function search(){
            favorited = dataList['results'][i].favorited
 
 
-
+          
            if(spam > 0.99){
             if(favorited) // nezajimavy
                     a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
             else
-                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a> | </span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
            }
 
            else{ // zajimave
@@ -648,9 +651,11 @@ function starsiTwtySrch(){
 
 function skryjZajimave(){
     window.document.getElementById('timeLineZajimave').setAttribute("style","display:none");
-     window.document.getElementById('skrytZajimave').setAttribute("onclick","zobrazZajimave()");
+    window.document.getElementById('skrytZajimave').setAttribute("onclick","zobrazZajimave()");
+    window.document.getElementById('skrytZajimave').innerHTML = "Zobrazit zajímavé teety"
 }
 function zobrazZajimave(){
      window.document.getElementById('timeLineZajimave').setAttribute("style","display:block");
      window.document.getElementById('skrytZajimave').setAttribute("onclick","skryjZajimave()");
+     window.document.getElementById('skrytZajimave').innerHTML = "Skrýt zajímavé teety"
 }

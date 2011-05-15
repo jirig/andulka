@@ -179,6 +179,14 @@ closeDB();
 
 });
 
+Titanium.addEventListener( Titanium.CLOSE, function(event) {
+
+//alert("KONEC!")
+closeDB();
+
+});
+
+
 var globalObject;
 Titanium.UI.addEventListener(Titanium.PAGE_INITIALIZED, function(event)
 {
@@ -290,24 +298,11 @@ alert("Got page initialized event!");
 <div id="vizual">
     <div id="container">
         <div id="left-container">
-
-
-
-        <div class="text">
-        <h4>
-Tree Animation
-        </h4>
-
-            A static JSON Tree structure is used as input for this animation.<br /><br />
-            Clicking on a node should move the tree and center that node.<br /><br />
-            The centered node's children are displayed in a relations list in the right column.
-
+        <div class="text">      
         </div>
 </div>
         <div id="id-list"></div>
 
-
-<div style="text-align:center;"><a href="ex1.js">See the Example Code</a></div>      
     <div id="center-container">
         <div id="infovis" style="width: 90%;"></div>
     </div>
