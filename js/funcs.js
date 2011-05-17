@@ -1,4 +1,4 @@
-
+var schovano = 0;
 function presmeruj()
 {
   window.location.href="http://google.com";
@@ -403,6 +403,9 @@ function spamPr(text){
 
 function timeLine(){
     window.document.getElementById('timeLine').style.display = "block";
+    window.document.getElementById('skrytZajimave').setAttribute("style","display:block");
+    if(schovano == 0)
+       zobrazZajimave();
     a = "<h3>Všechny tweety</h3>"
     if(pageHomeCount > 1)
         a = window.document.getElementById('timeLineOstatni').innerHTML
@@ -553,7 +556,8 @@ function nactiTokeny(){
       var readStream = Titanium.Filesystem.getFileStream(readFile);
       readStream.open(Titanium.Filesystem.MODE_READ);     
       OAT = readStream.readLine().toString();
-      OATS = readStream.readLine().toString();
+      OATS = readStream.readLine().toString();     
+//       if((prah = readStream.readLine()) != null) alert("prah")
       readStream.close();
 //      alert('OAT = ' + OAT + 'OATS = '+ OATS);
       Titanium.API.info('OAT = ' + OAT + '  OATS = '+ OATS);
@@ -579,8 +583,13 @@ function closeDB(){
 
 function search(){
     schovejViz();
+
+    window.document.getElementById('skrytZajimave').setAttribute("style","display:block");
+    window.document.getElementById('timeLineZajimave').setAttribute("style","display:block");
     window.document.getElementById('popisZobrazeni').innerHTML = "<h1>Vyhledávání</h1>";
     window.document.getElementById('timeLine').style.display = "block";
+     if(schovano == 0)
+       zobrazZajimave();
     slovo = window.document.getElementById("searchInput").value;
     twcm.vypis(spojeni, "searchf", slovo, pageHomeCount)
     a = "<h3>Všechny tweety</h3>"
@@ -653,9 +662,42 @@ function skryjZajimave(){
     window.document.getElementById('timeLineZajimave').setAttribute("style","display:none");
     window.document.getElementById('skrytZajimave').setAttribute("onclick","zobrazZajimave()");
     window.document.getElementById('skrytZajimave').innerHTML = "Zobrazit zajímavé teety"
+    schovano = 1
 }
 function zobrazZajimave(){
      window.document.getElementById('timeLineZajimave').setAttribute("style","display:block");
      window.document.getElementById('skrytZajimave').setAttribute("onclick","skryjZajimave()");
      window.document.getElementById('skrytZajimave').innerHTML = "Skrýt zajímavé teety"
+     schovano = 0
+}
+
+function mentionsFavs(co){
+      window.document.getElementById('skrytZajimave').setAttribute("style","display:none");
+      window.document.getElementById('timeLine').style.display = "block";
+      window.document.getElementById('timeLineZajimave').style.display = "none"
+      a=""
+       if(pageHomeCount == 1)
+           window.document.getElementById('timeLineOstatni').innerHTML = ""
+        if(pageHomeCount > 1)
+            a = window.document.getElementById('timeLineOstatni').innerHTML
+    //    alert(":::" + a +":::")
+        if(co == "mentions"){
+            window.document.getElementById('popisZobrazeni').innerHTML = "Mentios"
+            dataList = twcm.vypis(spojeni, "mentions", null , pageHomeCount);
+        }
+        else{
+            dataList = twcm.vypis(spojeni, "myFavs", null , pageHomeCount);
+            window.document.getElementById('popisZobrazeni').innerHTML = "Oblíbené"
+        }
+        a += dataList;
+        Titanium.API.info('**************************************XXXX***************************');
+        window.document.getElementById('timeLineOstatni').innerHTML = a +  '<br /><a href="#starsi" name="starsi"; onclick="starsiMentionsFavs(\''+co+'\');">--STARŠÍ-</a>'
+//        location.href = '#starsi';
+
+}
+
+function starsiMentionsFavs(co){
+     pageHomeCount =pageHomeCount + 1;
+//     alert(pageHomeCount)
+      mentionsFavs(co);
 }

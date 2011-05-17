@@ -198,18 +198,20 @@ alert("Got page initialized event!");
     //spojeni = tConnectPy();
 </script>   
 <div id="centr">
-<div class="navigace">
+<div class="navigace" name ="navigace">
    
 <img src="./img/gui/pencil_icon48.png" title="Nový twít" onclick = "ukazForm('twtForm'); document.getElementById('statusArea').focus();"  style="font-size: 48px; border-right: solid 1px #aaa; padding-right: 15px;" />
 
 <!--<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "tVypisPy(spojeni,'timeline');schovejViz();" />-->
-<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "pageHomeCount = 1; timeLine();schovejViz(); location.href = '#timeLine';" />
+<img src="./img/gui/list_bullets_icon48.png" title="Timeline" onclick = "pageHomeCount = 1; timeLine();schovejViz(); location.href = '#navigace';" />
 <img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
-<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz(); pageHomeCount = 1;" />
+<!--<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz(); pageHomeCount = 1;" />-->
+<img src="./img/gui/at48.png" title="Mentions"  onclick = " pageHomeCount = 1; mentionsFavs('mentions');schovejViz();  location.href = '#navigace';" />
 <!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
 
 <!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
-<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz(); pageHomeCount = 1; location.href = '#timeLine';" />
+<!--<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz(); pageHomeCount = 1; location.href = '#timeLine';" />-->
+<img src="./img/gui/star_fav_icon48.png" title="Oblíbené"  onclick = " pageHomeCount = 1; mentionsFavs('myFavs');schovejViz();  location.href = '#navigace';" />
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>-->
 <img src="./img/gui/zoom_icon48.png"title="Vyhledávání"  OnClick = "ukazForm('searchForm'); document.getElementById('searchInput').focus();" />
 <!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bFiltruj();" />-->
@@ -257,7 +259,7 @@ alert("Got page initialized event!");
 <!-- </form> -->
 
 <div id="timeLine" style="padding:10px">
-    <h1 id="popisZobrazeni"></h1>
+    <h1 id="popisZobrazeni" name ="popisZobrazeni"></h1>
     <a  id ="skrytZajimave" href="#" onclick="skryjZajimave()" title="skryje předřazený výpis zajímavých tweerů (boudou vyznačeny v celkovém výpisu)"> [-] Skrýt zajímavé</a>
     <div id ="timeLineZajimave"> </div>
     <div id ="timeLineOstatni">  </div>

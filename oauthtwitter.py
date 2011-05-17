@@ -355,19 +355,19 @@ class OAuthApi():
           	
           Return: The home timeline in dict format	
     	'''
-
-    	tmplist = []
-    	for n in range(1,1000):
-	  options = {'page':n}
-	  appendix = self.ApiCall("favorites", "GET", options)
-	  if appendix != []:
-	    tmplist.extend(appendix)
-	    
-	  else:
-	    break
-    	#options={'rpp':'35','page':'2'}
-    	#return self.ApiCall("favorites", "GET", options) 
-    	return tmplist
+        return self.ApiCall("favorites", "GET", options)
+#    	tmplist = []
+#    	for n in range(1,1000):
+#	  options = {'page':n}
+#	  appendix = self.ApiCall("favorites", "GET", options)
+#	  if appendix != []:
+#	    tmplist.extend(appendix)
+#
+#	  else:
+#	    break
+#    	#options={'rpp':'35','page':'2'}
+#    	#return self.ApiCall("favorites", "GET", options)
+#    	return tmplist
 
     def GetSearchResult(self, search = None, options={}):
 
@@ -392,9 +392,22 @@ class OAuthApi():
         data = self.ApiCall("statuses/show/"+statusid, "GET")
         return data
 
-    def GetMentions(self):
-        data = self.ApiCall("statuses/mentions", "GET")
-        return data
+#    def GetMentions(self):
+#        data = self.ApiCall("statuses/mentions", "GET")
+#        return data
+    def GetMentions(self, options = {}):
+        return self.ApiCall("statuses/mentions", "GET",options)
+#        tmplist = []
+#    	for n in range(1,1000):
+#	  options = {'page':n}
+#	  appendix = self.ApiCall("statuses/mentions", "GET", options)
+#	  if appendix != []:
+#	    tmplist.extend(appendix)
+#
+#	  else:
+#	    break
+#    	return tmplist
+    
     def Retweet(self, statusid):
         print "Retweet: "+statusid
         self.ApiCall("statuses/retweet/"+statusid, "POST")

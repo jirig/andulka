@@ -20,11 +20,11 @@ def vypis(twitter, co, search = None, page = None):
     dataList =  twitter.GetHomeTimeline(options = {'page':page})
 #    dataList =  twitter.GetHomeTimeline()
   elif(co == "myFavs"):
-    dataList =  twitter.GetAllUsersFavs()
+    dataList =  twitter.GetAllUsersFavs(options = {'page':page})
 #  elif(co == "usrFavs"):
 #    dataList =  twitter.GetConcretUserFavs()
   elif(co == "mentions"):
-    dataList =  twitter.GetMentions()
+    dataList =  twitter.GetMentions(options = {'page':page})
   elif((co == "search") or (co == "searchf")):
      dataList = twitter.GetSearchResult(options = {'q':search,'page':page})
 #  pomocna promenna pro ulozeni a vypis statusExpecting , delimiter: line 1 u
@@ -55,11 +55,13 @@ def vypis(twitter, co, search = None, page = None):
 #  vypis statusu krom vyhledavani
   else:
       if(co=="myFavs"):
-         a="<h1>Favorites</h1>"
+#         a="<h1>Favorites</h1>"
+            a=""
       elif(co=="timeline"):
          a="<h1>Timeline</h1>"
       elif(co=="mentions"):
-         a="<h1>Mentions</h1>"
+#         a="<h1>Mentions</h1>"
+            a=""
      
       for i in range(0,len(dataList)):
 #        try:
