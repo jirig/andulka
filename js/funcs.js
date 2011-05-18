@@ -442,6 +442,7 @@ function timeLine(){
            datum  = dataList[i].created_at
            favorited = dataList[i].favorited
 
+            datum = prevodCasu(datum);
            
 
            if(spam > 0.99){
@@ -623,6 +624,7 @@ function search(){
            statusid = dataList['results'][i].id_str
            datum  = dataList['results'][i].created_at
            favorited = dataList['results'][i].favorited
+           datum = prevodCasu(datum);
 
 
           
@@ -631,6 +633,7 @@ function search(){
                     a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
             else
                     a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a> | </span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+//                                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a> | </span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
            }
 
            else{ // zajimave
@@ -700,4 +703,87 @@ function starsiMentionsFavs(co){
      pageHomeCount =pageHomeCount + 1;
 //     alert(pageHomeCount)
       mentionsFavs(co);
+}
+
+function prevodCasu(stamp){
+    var datum = new Date(Date.parse(stamp))
+      console.log(datum)
+      var now = new Date();
+      var nowEpoch = now.getTime();
+      targetEpoch = datum.getTime();
+        daysLeft = Math.floor(((nowEpoch - targetEpoch) / (60*60*24)) / 1000);
+        hours =  Math.floor((nowEpoch - targetEpoch) / 1000/ (60*60) % 24 );
+        minutes = Math.floor(((nowEpoch - targetEpoch) / 1000 % (60*60)) / 60 );
+        seconds = Math.floor((nowEpoch - targetEpoch) / 1000 % 60 );
+      if(daysLeft >= 1)
+// 	return daysLeft;
+//        if(daysLeft == 1)
+//            return "včera"
+//	else
+            return Date(stamp).toLocaleString().substr(0, 16);
+      else if(hours >= 1)
+	if(hours == 1)
+	  return "před hodinou"
+	else if (hours < 5)
+	  return  hours + " hodiny zpět"
+        else 
+            return hours + " hodin zpět"
+      else if(minutes > 0)
+	if(minutes == 1)
+	  return "před minutou"
+        else if(minutes < 5)
+            return minutes + " minuty zpět"
+	else
+	  return minutes + " minut zpět"
+// 	return minutes
+      else return "před chvílí"
+}
+
+function stopListTest(slovo){
+//   slovo = "BUT"
+   var stoplistCZ;
+   var stoplistEN;
+//   var filename = 'SOUBORTITANX.txt';
+   var userDir = Titanium.Filesystem.getApplicationDataDirectory();  
+   var readFile = Titanium.Filesystem.getFile(userDir, "stoplistCZ.txt");
+   if (readFile.exists()){
+      var readStream = Titanium.Filesystem.getFileStream(readFile);
+      readStream.open(Titanium.Filesystem.MODE_READ);
+      stoplistCZ = readStream.read().toString();
+      readStream.close();
+//      return true;
+   }
+    else {alert('NELZE nacist STOPLIST (CZ)');return false;}
+   userDir = Titanium.Filesystem.getApplicationDataDirectory();  
+   readFile = Titanium.Filesystem.getFile(userDir, "stoplistEN.txt");
+   if (readFile.exists()){
+      readStream = Titanium.Filesystem.getFileStream(readFile);
+      readStream.open(Titanium.Filesystem.MODE_READ);
+      stoplistEN = readStream.read().toString();
+      readStream.close();
+//      return true;
+   }
+    else {alert('NELZE nacist STOPLIST (EN)');return false;}
+    naselCZ = stoplistCZ.search(slovo.toLowerCase());
+//    alert(nasel)
+     naselEN = stoplistEN.search(slovo.toLowerCase());
+//    alert(nasel)
+    if((naselCZ == -1) ||  (naselEN == -1))
+        return false    
+    else
+        return true
+/*    if(nasel == -1)
+
+    nasel = stoplistCZ.search(/Praha/i);
+    if(nasel == -1)
+        alert("nenasel v CZ")
+    else
+         alert("nasel v CZ")
+    nasel = stoplistEN.search(/BUT/i);
+    if(nasel == -1)
+        alert("nenasel v EN")
+    else
+         alert("nasel v EN")
+*/
+
 }
