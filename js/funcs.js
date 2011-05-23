@@ -1,4 +1,6 @@
 var schovano = 0;
+var stoplistCZ;
+var stoplistEN;
 function presmeruj()
 {
   window.location.href="http://google.com";
@@ -197,7 +199,7 @@ function dbUpdate(db, slovo, zajimavost){
       }
      //alert("Found " + resultSet.rowCount() + " rows");
 }
-
+/*
 function dbPridatZajimavy(statusId){
 
 
@@ -221,10 +223,10 @@ function dbPridatZajimavy(statusId){
         a ++;
         hm += " " + tmpSlovo
     }    
-    db.close()
+//    db.close()
     alert(hm + ":" + a)
 }
-    
+    */
 function dbPridatZaj(text){
 
 
@@ -243,11 +245,13 @@ function dbPridatZaj(text){
     //alert(arrayPy)
     while(arrayPy.length > 0){
         tmpSlovo = arrayPy.pop()
+         if(!(stopListTest(tmpSlovo))){ // slovo neni ve stoplistu tak jej ulozi
         dbUpdate(db, tmpSlovo,1)
         a ++;
         hm += " " + tmpSlovo
+         }
     }
-    db.close()
+//    db.close()
     alert(hm + ":" + a)
 }
 
@@ -255,25 +259,49 @@ function dbPridatSpam(text){
 
 
 
+   forSplit = twcm.replaceNonAlpha(text)
+
+    // pole s jednotlivymi slovy
+    arrayPy = twcm.splitIt(forSplit);
+
+    while(arrayPy.length > 0){
+        tmpSlovo = arrayPy.pop()
+        if(!(stopListTest(tmpSlovo))){
+        dbUpdate(db, tmpSlovo,0)
+        }
+    }
+//    db.close()
+
+
+
+
+/*
     // spojeni s DB
 //     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
      db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
 
-    forSplit = twcm.replaceNonAlpha(text)
+    fSplit = twcm.replaceNonAlpha(text)
 
     // pole s jednotlivymi slovy
-    arrayPy = twcm.splitIt(forSplit);
+    arrPy = twcm.splitIt(fSplit);
+//    alert(arrPy)
     hm = ""
     a = 0
     //alert(arrayPy)
-    while(arrayPy.length > 0){
-        tmpSlovo = arrayPy.pop()
-        dbUpdate(db, tmpSlovo,0)
-        a ++;
-        hm += " " + tmpSlovo
+    while(arrPy.length > 0){
+        tmpS = arrPy.pop()
+    if(!(stopListTest(tmpS))){ // slovo neni ve stoplistu tak jej ulozi
+        dbUpdate(db, tmpS,0)
+//        a ++;
+//        hm += " " + tmpSlovo
+        
+        }
+        
+       
     }
-    db.close()
+//    db.close()
     //alert(hm + ":" + a)
+    */
 }
 
 function bSelekce(){
@@ -326,7 +354,7 @@ function dbSpamWord(slovo){
     resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ?", slovo);
     zajimPocet =  resultSet.fieldByName('pocetZ');
     if(spamPocet == 0 || spamPocet == null) spamPocet = 1;
-    if(zajimPocet == 0 || zajimPocet == null) zajimPocet = 1;
+    if(zajimPocet == 0 || zajimPocet == null) zajimPocet = 0;
 //    alert(spamPocet);
     resultSet = db.execute("SELECT * FROM slovo WHERE pocetN > 1");
 //    resultSet = db.execute("SELECT SUM(pocetN) FROM slovo");
@@ -344,8 +372,8 @@ function dbSpamWord(slovo){
 //    alert("dbSpamWord pravSpam: "+pravSpam + " pSS: " +pocetSpamSlov +" pZS "+pocetZajimSlov  );
     if(pravSpam < 0.01)
             pravSpam = 0.01
-    else if(pravSpam > 0.99)
-            pravSpam = 0.99
+    else if(pravSpam > 0.99999)
+            pravSpam = 0.99999
 
     return pravSpam;
 }
@@ -386,10 +414,12 @@ function spamPr(text){
      wordArray = twcm.splitIt(forSplit);
      while(wordArray.length > 0){
             tmpSlovo = wordArray.pop()
-            spamPravSlovo = dbSpamWord(tmpSlovo)
+            if (!(stopListTest(tmpSlovo))){ // slovo neni ve stoplistu
+                spamPravSlovo = dbSpamWord(tmpSlovo)
 
-            pZ *= spamPravSlovo
-            pN *= 1.0 - spamPravSlovo
+                pZ *= spamPravSlovo
+                pN *= 1.0 - spamPravSlovo
+            }
         }
 //        if(pZ < 0.01) pZ = 0.01;
 //        if(pN < 0.01) pN = 0.01;
@@ -401,9 +431,10 @@ function spamPr(text){
     return spamPrav
 }
 
-function timeLine(){
+function timeLine(co){
     window.document.getElementById('timeLine').style.display = "block";
     window.document.getElementById('skrytZajimave').setAttribute("style","display:block");
+     window.document.getElementById('timeLineZajimave').innerHTML =""
     if(schovano == 0)
        zobrazZajimave();
     a = "<h3>Všechny tweety</h3>"
@@ -414,7 +445,10 @@ function timeLine(){
     zajimaveTweety = "<h3>Zajímavé</h3>"
 //    alert("TIMELINE");
     Titanium.API.info('**************************************XXXX***************************');
+    if(co == "timeline")
     dataList = twcm.vypis(spojeni, "filtr", null , pageHomeCount);
+    else if(co == "globalline")
+         dataList = twcm.vypis(spojeni, "globalline", null , pageHomeCount);
     Titanium.API.info('-PRED###################### -V-Y-P-I-S');
     
      for(i = 0; i < dataList.length; i++){
@@ -433,8 +467,10 @@ function timeLine(){
           }
           // jaka je pravdepodobnost ze je tweet spam
            spam = spamPr(rawText)
-           //  // // //
-//           dbPridatSpam(rawText)
+//            spam = spamPr(rawText)
+//           spam = 1
+           //  // // /
+        dbPridatSpam(rawText)
            //  // // //
            text = twcm.replaceTag(text,0)
            text = twcm.replaceScreenName(text,0)
@@ -484,8 +520,8 @@ function zapisDoSouboru(filename, text){
 //   povedloSe = writeStream.write(contents);
    povedloSe = writeStream.write(text);
    writeStream.close();
-   if(povedloSe)   alert("zapsano")
-   else alert("error")
+//   if(povedloSe)   alert("zapsano")
+//   else alert("error")
 }
 
 function ctiSoubor(filename){
@@ -525,7 +561,8 @@ function prvniLogin(){
     temp_credentials = twcm.getReqToken(spojeni);
     link = twcm.prvniLogin(spojeni, temp_credentials);
     Titanium.Desktop.openURL(link);
-    window.document.getElementById("vyzva").setAttribute("style", "display:block;");    
+    window.document.getElementById("vyzva").setAttribute("style", "display:block;");
+    window.document.getElementById("skrytZajimave").setAttribute("style", "display:none;");
     //access_token = twitter.getAccessToken(temp_credentials, oauth_verifier)
 }
 function prijmiPIN(){
@@ -537,11 +574,12 @@ function prijmiPIN(){
     OAT = accesToken.oauth_token;
     OATS = accesToken.oauth_token_secret;
     text =  accesToken.oauth_token + "\n" + accesToken.oauth_token_secret
-    alert(text)
+//    alert(text)
     zapisDoSouboru(configAppFile, text)
     spojeni = twcm.connectToTwNew(OAT, OATS);
     openDB();
-    timeLine();
+        window.document.getElementById("skrytZajimave").setAttribute("style", "display:block;");
+    timeLine("timleline");
 //    alert( accesToken)
 //    zapisDoSouboru("andulka.config", accesToken)
 //    alert("PrijmiPIN - KONEC");
@@ -571,7 +609,7 @@ function nactiTokeny(){
 function starsiTwty(){
      pageHomeCount =pageHomeCount + 1;
 //     alert(pageHomeCount)
-     timeLine();
+     timeLine("timeline");
 }
 
 function openDB(){
@@ -584,7 +622,7 @@ function closeDB(){
 
 function search(){
     schovejViz();
-
+     window.document.getElementById('timeLineZajimave').innerHTML =
     window.document.getElementById('skrytZajimave').setAttribute("style","display:block");
     window.document.getElementById('timeLineZajimave').setAttribute("style","display:block");
     window.document.getElementById('popisZobrazeni').innerHTML = "<h1>Vyhledávání</h1>";
@@ -738,13 +776,11 @@ function prevodCasu(stamp){
 // 	return minutes
       else return "před chvílí"
 }
-
-function stopListTest(slovo){
-//   slovo = "BUT"
-   var stoplistCZ;
-   var stoplistEN;
-//   var filename = 'SOUBORTITANX.txt';
-   var userDir = Titanium.Filesystem.getApplicationDataDirectory();  
+function nactiStoplisty(){
+/*funkce nacte obsahy stoplistu pro mozna porovnavani za behu
+ *stoplisty jsou nacteny do globalnich promennych stoplistCZ a EN
+ */
+   var userDir = Titanium.Filesystem.getApplicationDataDirectory();
    var readFile = Titanium.Filesystem.getFile(userDir, "stoplistCZ.txt");
    if (readFile.exists()){
       var readStream = Titanium.Filesystem.getFileStream(readFile);
@@ -754,7 +790,7 @@ function stopListTest(slovo){
 //      return true;
    }
     else {alert('NELZE nacist STOPLIST (CZ)');return false;}
-   userDir = Titanium.Filesystem.getApplicationDataDirectory();  
+   userDir = Titanium.Filesystem.getApplicationDataDirectory();
    readFile = Titanium.Filesystem.getFile(userDir, "stoplistEN.txt");
    if (readFile.exists()){
       readStream = Titanium.Filesystem.getFileStream(readFile);
@@ -763,27 +799,20 @@ function stopListTest(slovo){
       readStream.close();
 //      return true;
    }
-    else {alert('NELZE nacist STOPLIST (EN)');return false;}
+
+}
+function stopListTest(slovo){
+    /*
+     *funkce otestuje zda se @slovo nachází v nekterem stoplistu
+     **/
     naselCZ = stoplistCZ.search(slovo.toLowerCase());
-//    alert(nasel)
-     naselEN = stoplistEN.search(slovo.toLowerCase());
-//    alert(nasel)
-    if((naselCZ == -1) ||  (naselEN == -1))
-        return false    
-    else
+    if(naselCZ == -1){ // nenasel v prvnim stoplistu a koukne se do druheho
+         naselEN = stoplistEN.search(slovo.toLowerCase());
+          if(naselEN == -1)
+            return false // slovo neni v stoplistu
+         else 
+             return true // je obsazeno v stoplistu
+    }
+    else // slovo je v prvnim stoplistu
         return true
-/*    if(nasel == -1)
-
-    nasel = stoplistCZ.search(/Praha/i);
-    if(nasel == -1)
-        alert("nenasel v CZ")
-    else
-         alert("nasel v CZ")
-    nasel = stoplistEN.search(/BUT/i);
-    if(nasel == -1)
-        alert("nenasel v EN")
-    else
-         alert("nasel v EN")
-*/
-
 }

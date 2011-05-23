@@ -239,7 +239,7 @@ class OAuthApi():
           Return: The friends timeline in dict format
     	'''
     	return self.ApiCall("statuses/friends_timeline", "GET", options)
-    
+    #---------------------------modified---------------------------------------
     def GetHomeTimeline(self, options={}):
         '''Get the home timeline. Unlike friends timeline it also contains retweets
 
@@ -296,15 +296,15 @@ class OAuthApi():
           Return: The home timeline in dict format	
     	'''
     	return self.ApiCall("statuses/user_timeline", "GET", options)    
-    
-    def GetPublicTimeline(self):
+        #---------------------------modified---------------------------------------
+    def GetPublicTimeline(self, options={}):
     	'''
     		Get the public timeline, which is the 20 most recent statuses from non-protected
     		and custom icon users.  According to the API docs, this is cached for 60 seconds.
           	
           Return: The public timeline in dict format	
     	'''
-    	return self.ApiCall("statuses/public_timeline", "GET", {})     
+    	return self.ApiCall("statuses/public_timeline", "GET", options)
     
     def UpdateStatus(self, status, options = {}):
     	'''
@@ -342,7 +342,7 @@ class OAuthApi():
         #return result['text']
 
 #------------------------------------------------------------------------------
-#------------------------------------------------------------------------------       
+#---------------------------modified---------------------------------------
 #------------------------------------------------------------------------------       
     def GetAllUsersFavs(self, options={}):
     	'''Get the user favorites.

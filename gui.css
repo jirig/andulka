@@ -5,6 +5,12 @@ body{
     text-align: center;
     background-image: url("./img/CarbonTexture.jpg");
 }
+
+a {
+    color:#23A4FF;
+    background-color: #333;
+}
+
 #centr{
     margin: 0px 0px;
     /*padding: 1em;*/
@@ -86,6 +92,34 @@ body{
 /*vyzva k povoleni pristupu klienta k twitteru*/
 #vyzva{
     display:none;
+    background-color: #ddd;
+    text-align: left;
+    padding: 5px;
+    /*margin: 10px;*/
+    margin: 30px;
+    /*width: 80%;*/
+    -webkit-border-radius: 20px;
+    -webkit-border-top-left-radius: 1px;
+    -moz-border-radius: 20px;
+    -moz-border-radius-topleft: 1px;
+    border-radius: 20px;
+    border-top-left-radius: 1px;
+    border-style: solid;
+    border-color: #fff;
+    border-width: 1px;
+    /*opacity: 0.5;*/
+
+     /* Firefox 3.6+ */
+    background: -moz-linear-gradient(100% 100% 90deg, #ccc, #fff);
+
+  /* Safari 4-5, Chrome 1-9 */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ccc));
+
+  /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-linear-gradient(#fff, #ccc);
+
+  /* Opera 11.10+ */
+    background: -o-linear-gradient(#ccc, #fff);
 }
 /*div obalujici tweet a prilehle nalezitosti*/
 .statusDiv{
@@ -122,6 +156,10 @@ body{
     float:left;
     margin-right: 10px
 
+}
+.statusDiv a {
+    color:#23A4FF;
+    background-color: transparent;
 }
 /*trida pro zajimave prispevky*/
 .zajStat{

@@ -18,6 +18,10 @@ def vypis(twitter, co, search = None, page = None):
     if(page == None):
           page=1
     dataList =  twitter.GetHomeTimeline(options = {'page':page})
+  elif(co == "globalline"):
+         if(page == None):
+          page=1
+         dataList =  twitter.GetPublicTimeline(options = {'page':page})
 #    dataList =  twitter.GetHomeTimeline()
   elif(co == "myFavs"):
     dataList =  twitter.GetAllUsersFavs(options = {'page':page})
@@ -47,7 +51,7 @@ def vypis(twitter, co, search = None, page = None):
                 a = "<b> Žádný výsledek nebyl nalezen</b>"
   elif(co == "searchf"):
       return dataList
-  elif(co == "filtr"):
+  elif((co == "filtr") or (co =="globalline")):
 #      for i in range(0,len(dataList)):
 #        a+= dataList[i]['user']['screen_name'] + " "+ unicode(dataList[i]['text']) + " "
 #        a+= unicode(dataList[i]['text']) + " "
