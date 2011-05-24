@@ -179,4 +179,7 @@ var json = jsn
     ht.refresh();
     //end
     ht.controller.onAfterCompute();
+//    ht.move({ x: 0, y: 0.7 }, {
+//      hideLabels: false
+//    });
 }

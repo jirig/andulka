@@ -149,7 +149,7 @@ def vizData(twitter):
                     print "===== E  REPLY======"
 
     tmp_jsn = tmp_jsn.encode('utf-8')
-    jsn = simplejson.loads('{"id": "ME", "name": "me","data": {},"children": [' +tmp_jsn+ ']}')
+    jsn = simplejson.loads('{"id": "You", "name": "You","data": {"tsomekey":" "},"children": [' +tmp_jsn+ ']}')
     
 #    print jsn
     return jsn

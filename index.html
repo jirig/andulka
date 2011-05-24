@@ -58,6 +58,9 @@ def tVypisPy(spojeni, co, query = None):
 
 def posliStatusPy(spojeni, replyStatusID):
     #try:
+    if(window.document.getElementById('pocet').innerHTML < 0):
+        alert("Text je příliš dlouhý")
+    else:
       text = window.document.getElementById('statusArea').value;
       if(replyStatusID):
         twcm.publishStatus(spojeni, text, statusID = replyStatusID);
@@ -245,8 +248,8 @@ alert("Got page initialized event!");
   <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
 </form>
 <div id="twtFormDiv"><a href="#" onclick = "ukazForm('twtForm');"> [X] </a></div>
-<form id="twtForm" action="javascript:posliStatusPy(spojeni, replyStatusID)"  method="get">
-  <textarea id = "statusArea" onkeyup = "pocetZnaku('statusArea')" rows="5" cols="28"></textarea> 
+<form id="twtForm" action="javascript:posliStatus(spojeni, replyStatusID)"  method="get">
+  <textarea id = "statusArea" onkeypress= "pocetZnaku('statusArea')" rows="5" cols="28"></textarea>
   <br />
   <span id = "pocet"></span>
   <input type="submit" value="Odeslat" />

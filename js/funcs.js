@@ -1,6 +1,24 @@
 var schovano = 0;
 var stoplistCZ;
 var stoplistEN;
+var LASTID=0;
+var vizFlag = 0;
+var tmpJSN;
+
+//window.addEventListener("onresize", resizeViz(), false);
+
+window.onresize = function()
+{
+     resizeViz();
+}
+
+function resizeViz(){
+//    alert("resize")
+if(vizFlag)
+//    init(tmpJSN); vykresli znova coz uplne nechci
+//    window.document.getElementById("infovis").setAttribute("style","width:200px")
+    true
+}
 function presmeruj()
 {
   window.location.href="http://google.com";
@@ -12,13 +30,16 @@ function pocetZnaku(kde)
 {
 // spocita pocet znaku v textarea
 //   pocetpismenek ++;
-
-//  window.document.getElementById('pocet').innerHTML =140 - window.document.getElementById(kde).value.length;
-  pocetz = 140 - window.document.getElementById(kde).value.length;
-  if(pocetz < 0){
+ pocetz = 140 - window.document.getElementById(kde).value.length;
+if(pocetz < 0){
       window.document.getElementById('pocet').style.color = "red";
       window.document.getElementById('pocet').style.fontWeight = "bold";
   }
+  else
+      window.document.getElementById('pocet').style.color = "black";
+//  window.document.getElementById('pocet').innerHTML =140 - window.document.getElementById(kde).value.length;
+ 
+  
   window.document.getElementById('pocet').innerHTML = pocetz;
 }
 
@@ -46,7 +67,10 @@ function reply(spojeni,sName, sID){
 }
 
 function vizualizuj(){
+    vizFlag = 1;
+
     jsn = vizPy(spojeni);
+    tmpJSN =jsn;
     obsahDivTimeLine = document.getElementById('timeLine').innerHTML
     otec = document.getElementById('contentDiv');
     mazany = document.getElementById('timeLine');
@@ -102,6 +126,7 @@ function ukazForm(id){
           //po zavreni
         replyStatusID =0; // zruseni odpovedniho ID
         window.document.getElementById('statusArea').value = "" // vymyzani textu
+        window.document.getElementById('pocet').value = "140"
    }
   }
   else{
@@ -131,6 +156,7 @@ function schovejViz(){
         if(el != null){
             window.document.getElementById('vizual').style.display = "none"
         }
+        vizFlag = 0;
 }
 
 function testdb(){
@@ -451,8 +477,20 @@ function timeLine(co){
          dataList = twcm.vypis(spojeni, "globalline", null , pageHomeCount);
     Titanium.API.info('-PRED###################### -V-Y-P-I-S');
     
+
+     statusid = dataList[0].id_str
+     // zapis nejaktualnejsi id prispevku do souboru aby se neohodnocovaly ty same prispevky dokola
+     zapisID(statusid);
+
      for(i = 0; i < dataList.length; i++){
+       
         Titanium.API.info('-p-o- -V-Y-P-I-S')
+          
+          statusid = dataList[i].id_str
+        
+          datum  = dataList[i].created_at
+          favorited = dataList[i].favorited
+          datum = prevodCasu(datum);
           rawText = dataList[i].text  //  "cisty text" tweetu pro potrebu vypoctu BF
           screenName = dataList[i].user.screen_name
           avatar = dataList[i].user.profile_image_url
@@ -466,19 +504,16 @@ function timeLine(co){
               text =  twcm.replaceUrl(dataList[i].text,0)
           }
           // jaka je pravdepodobnost ze je tweet spam
+          text = twcm.replaceTag(text,0)
+          text = twcm.replaceScreenName(text,0)
            spam = spamPr(rawText)
 //            spam = spamPr(rawText)
 //           spam = 1
-           //  // // /
-        dbPridatSpam(rawText)
+           //  pokud je ID prispevku mensi nez posledni nebude se pridavat do DB aby nedochazelo k duplicitam pri obnovovani atd.
+             if(LASTID < statusid)
+                 dbPridatSpam(rawText)
            //  // // //
-           text = twcm.replaceTag(text,0)
-           text = twcm.replaceScreenName(text,0)
-           statusid = dataList[i].id_str
-           datum  = dataList[i].created_at
-           favorited = dataList[i].favorited
-
-            datum = prevodCasu(datum);
+       
            
 
            if(spam > 0.99){
@@ -595,8 +630,10 @@ function nactiTokeny(){
       var readStream = Titanium.Filesystem.getFileStream(readFile);
       readStream.open(Titanium.Filesystem.MODE_READ);     
       OAT = readStream.readLine().toString();
-      OATS = readStream.readLine().toString();     
-//       if((prah = readStream.readLine()) != null) alert("prah")
+      OATS = readStream.readLine().toString();
+      nactiID();
+//     if((LASTID = readStream.readLine()) != null) alert("ID "+LASTID)
+//     else LASTID = 0
       readStream.close();
 //      alert('OAT = ' + OAT + 'OATS = '+ OATS);
       Titanium.API.info('OAT = ' + OAT + '  OATS = '+ OATS);
@@ -815,4 +852,51 @@ function stopListTest(slovo){
     }
     else // slovo je v prvnim stoplistu
         return true
+}
+
+function zapisID(id){
+    var userDir = Titanium.Filesystem.getApplicationDataDirectory();
+   var writeFile = Titanium.Filesystem.getFile(userDir, "lastid.cfg");
+   var writeStream = Titanium.Filesystem.getFileStream(writeFile);
+   writeStream.open(Titanium.Filesystem.MODE_WRITE);
+//   povedloSe = writeStream.write(contents);
+   povedloSe = writeStream.write(id);
+   writeStream.close();
+}
+function nactiID(){
+   var readContents;
+//   var filename = 'SOUBORTITANX.txt';
+   var userDir = Titanium.Filesystem.getApplicationDataDirectory();
+   var readFile = Titanium.Filesystem.getFile(userDir, "lastid.cfg");
+   if (readFile.exists()){
+      var readStream = Titanium.Filesystem.getFileStream(readFile);
+      readStream.open(Titanium.Filesystem.MODE_READ);
+     if((LASTID = readStream.readLine()) != null) alert("ID "+LASTID)
+     else LASTID = 0
+      readStream.close();
+//      Titanium.API.info('OAT = ' + OAT + '  OATS = '+ OATS);
+      return true;
+   }
+    else {alert('NEEX NACTI_TOKENY');return false;}
+}
+
+function posliStatus(spojeni, replyStatusID){
+    //#try:
+    if(window.document.getElementById('statusArea').value.length >140)
+        alert("Text je příliš dlouhý")
+    else{
+      text = window.document.getElementById('statusArea').value;
+      if(replyStatusID){
+        twcm.publishStatus(spojeni, text, statusID = replyStatusID);
+        replyStatusID = 0;
+      }
+      else
+        twcm.publishStatus(spojeni, text);
+      window.document.getElementById('statusArea').value = ""
+
+      ukazForm("twtForm")
+      window.document.getElementById('pocet').innerHTML =140
+   // #except:
+     //#  alert("odeslani selhalo");
+    }
 }
