@@ -55,6 +55,7 @@ def vypis(twitter, co, search = None, page = None):
 #      for i in range(0,len(dataList)):
 #        a+= dataList[i]['user']['screen_name'] + " "+ unicode(dataList[i]['text']) + " "
 #        a+= unicode(dataList[i]['text']) + " "
+        
         return dataList
 #  vypis statusu krom vyhledavani
   else:
@@ -306,6 +307,7 @@ def replaceNonAlpha(text):
     # (?u) => unicode flag
     text = text.decode('utf-8')
     return re.sub("(?u)[\W\d]", " ", text.strip())
+print("-----REPLACECCCCCCCCCCCCCCCCCCCCCCCCCCCC ------")
 #    return re.sub("[\W\d]", " ", text.strip())
 def splitIt(text):
     return text.split()

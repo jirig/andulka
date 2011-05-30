@@ -207,7 +207,14 @@ function dbUpdate(db, slovo, zajimavost){
          if(zajimavost){
             pocetZ = resultSet.fieldByName("pocetZ");           
             pocetZ = parseInt(pocetZ)+1;
+             pocetN = resultSet.fieldByName("pocetN");           
+            pocetN = parseInt(pocetN);
+            if(pocetN > 0){
+                pocetN = pocetN - 1;
+                resultSet= db.execute("UPDATE slovo SET pocetN = ? WHERE slovo = ?",pocetN, slovo);
+            }
             resultSet= db.execute("UPDATE slovo SET pocetZ = ? WHERE slovo = ?",pocetZ, slovo);
+            
          }
         else{
             pocetN = resultSet.fieldByName("pocetN");
@@ -261,8 +268,9 @@ function dbPridatZaj(text){
 //     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
      db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
 
-
+  Titanium.API.info('-PRED###################### -ZAJJJJ');
     forSplit = twcm.replaceNonAlpha(text)
+      Titanium.API.info('-POOOOO###################### -ZZZAAAAJJJ');
 
     // pole s jednotlivymi slovy
     arrayPy = twcm.splitIt(forSplit);
@@ -492,8 +500,10 @@ function timeLine(co){
           favorited = dataList[i].favorited
           datum = prevodCasu(datum);
           rawText = dataList[i].text  //  "cisty text" tweetu pro potrebu vypoctu BF
+          rawText = twcm.replaceNonAlpha(rawText)
           screenName = dataList[i].user.screen_name
           avatar = dataList[i].user.profile_image_url
+//          dataList[i].text = dataList[i].text.replace(/"/g, '&quot')
         // tweet je RT a zkraceny - nahradim text puvodnim nezkracenym
           if(dataList[i].retweeted_status && dataList[i].truncated == true){
             text = twcm.replaceUrl(dataList[i].retweeted_status.text,0)
@@ -690,6 +700,7 @@ function search(){
               text =  twcm.replaceUrl(dataList['results'][i].text,0)
           }
           // jaka je pravdepodobnost ze je tweet spam
+          rawText = twcm.replaceNonAlpha(rawText)
            spam = spamPr(rawText)
            //  // // //
 //           dbPridatSpam(rawText)
