@@ -232,34 +232,7 @@ function dbUpdate(db, slovo, zajimavost){
       }
      //alert("Found " + resultSet.rowCount() + " rows");
 }
-/*
-function dbPridatZajimavy(statusId){
 
-
-
-    // spojeni s DB
-//     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
-     db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
-     
-    text = twcm.getTwt(spojeni, statusId)
-
-    forSplit = twcm.replaceNonAlpha(text)
-
-    // pole s jednotlivymi slovy
-    arrayPy = twcm.splitIt(forSplit);
-    hm = ""
-    a = 0
-    //alert(arrayPy)
-    while(arrayPy.length > 0){
-        tmpSlovo = arrayPy.pop()
-        dbUpdate(db, tmpSlovo,1)
-        a ++;
-        hm += " " + tmpSlovo
-    }    
-//    db.close()
-    alert(hm + ":" + a)
-}
-    */
 function dbPridatZaj(text){
 
 
@@ -480,12 +453,18 @@ function timeLine(co){
 //    alert("TIMELINE");
     Titanium.API.info('**************************************XXXX***************************');
     if(co == "timeline")
+        try{
     dataList = twcm.vypis(spojeni, "filtr", null , pageHomeCount);
+        }
+    catch(err){
+        alert("ERROR")
+    }
     else if(co == "globalline")
-         dataList = twcm.vypis(spojeni, "globalline", null , pageHomeCount);
-    Titanium.API.info('-PRED###################### -V-Y-P-I-S');
-    
-
+         dataList = twcm.vypis(spojeni, "globalline", null , pageHomeCount);  
+    else{
+        dataList = twcm.vypis(spojeni, "globalline", null , pageHomeCount);
+    }
+  Titanium.API.info('-PRED###################### -V-Y-P-I-S');
      statusid = dataList[0].id_str
      // zapis nejaktualnejsi id prispevku do souboru aby se neohodnocovaly ty same prispevky dokola
      zapisID(statusid);
@@ -602,7 +581,7 @@ function existujeSoubor(filename){
 
 }
 
-function prvniLogin(){
+function prvniLogin(spojeni){
     temp_credentials = twcm.getReqToken(spojeni);
     link = twcm.prvniLogin(spojeni, temp_credentials);
     Titanium.Desktop.openURL(link);
@@ -624,7 +603,7 @@ function prijmiPIN(){
     spojeni = twcm.connectToTwNew(OAT, OATS);
     openDB();
         window.document.getElementById("skrytZajimave").setAttribute("style", "display:block;");
-    timeLine("timleline");
+    timeLine("timeline");
 //    alert( accesToken)
 //    zapisDoSouboru("andulka.config", accesToken)
 //    alert("PrijmiPIN - KONEC");

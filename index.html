@@ -271,7 +271,7 @@ alert("Got page initialized event!");
     <script>
         //tVypisPy(spojeni,'timeline');
         //if (existujeSoubor("andulka.config")){
-          if (existujeSoubor(configAppFile)){
+          if (existujeSoubor(configAppFile)){ // klient byl již spuštěn a zaregistrovan
             //spojeni = tConnectPy();
             nactiTokeny();
             nactiStoplisty();
@@ -280,7 +280,7 @@ alert("Got page initialized event!");
             timeLine("timeline");
         }
         else 
-        {
+        { // klienta je potřeba zaregistrovat a následuje první spojení
             spojeni = twcm.firstConn();
             nactiStoplisty();
             prvniLogin(spojeni);
