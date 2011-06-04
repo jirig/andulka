@@ -66,7 +66,7 @@ var json = jsn
     //end
     var infovis = document.getElementById('infovis');
     var w = infovis.offsetWidth - 50, h = infovis.offsetHeight - 50;
-    
+   
     //init Hypertree
     var ht = new $jit.Hypertree({
       //id of the visualization container
@@ -171,15 +171,39 @@ var json = jsn
           });
           html += "</ul>";
           $jit.id('inner-details').innerHTML = html;
-      }
+      },
+ resize: function(width, height) {
+//        width = window.innerWidth;
+//        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height =height;
+        canvas.style.width = width + "px";
+        canvas.style.height =height + "px";
+        if(bc) {
+                bkcanvas.width = width;
+                bkcanvas.height = height;
+                bkcanvas.style.width = width + "px";
+                bkcanvas.style.height = height + "px";
+        }
+        translateToCenter(canvas, ctx);
+        var st = opt.styles;
+        for(var s in st) ctx[s] = st[s];
+        if(bc) {
+                var st = bc.styles;
+                for(var s in st) bkctx[s] = st[s];
+                translateToCenter(bkcanvas, bkctx);
+                bc.impl.init(bkcanvas, bkctx);
+                bc.impl.plot(bkcanvas, bkctx);
+        }
+        return arguments.callee;
+
+}
     });
     //load JSON data.
     ht.loadJSON(json);
     //compute positions and plot.
+//    canvas.resize(width, height);
     ht.refresh();
     //end
     ht.controller.onAfterCompute();
-//    ht.move({ x: 0, y: 0.7 }, {
-//      hideLabels: false
-//    });
 }

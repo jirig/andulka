@@ -211,19 +211,11 @@ alert("Got page initialized event!");
 <img src="./img/gui/share_icon48.png" title="Vizualizace" onclick = "vizualizuj(spojeni);" />
 <!--<img src="./img/gui/at48.png"title="Mentions"  onclick = "tVypisPy(spojeni,'mentions');schovejViz(); pageHomeCount = 1;" />-->
 <img src="./img/gui/at48.png" title="Mentions"  onclick = " pageHomeCount = 1; mentionsFavs('mentions');schovejViz();  location.href = '#navigace';" />
-<!-- |<a href="#" class="menu" OnClick = "tVypisPy(spojeni,'timeline')" >TimeLine</a> |-->
-
-<!--<a href="#" class="menu" onclick = "vizualizuj(spojeni);"> VIZZZZ</a> |-->
 <!--<img src="./img/gui/star_fav_icon48.png"title="Oblíbené"  OnClick = "tVypisPy(spojeni,'myFavs');schovejViz(); pageHomeCount = 1; location.href = '#timeLine';" />-->
 <img src="./img/gui/star_fav_icon48.png" title="Oblíbené"  onclick = " pageHomeCount = 1; mentionsFavs('myFavs');schovejViz();  location.href = '#navigace';" />
 <!--<a href="#" class="menu" onclick = "tVypisPy(spojeni,'mentions');schovejViz();"> @ </a>-->
 <img src="./img/gui/zoom_icon48.png" title="Vyhledávání"  OnClick = "ukazForm('searchForm'); document.getElementById('searchInput').focus();" />
 <img src="./img/gui/filter_icon48.png" title="Filtrování v globální timeline"  OnClick = "pageHomeCount = 1; timeLine('globalline');schovejViz(); location.href = '#navigace';" />
-<!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bFiltruj();" />-->
-<!--<img src="./img/gui/filter_icon48.png"title="Filtrování"  OnClick = "bSelekce();" />-->
-<!--<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "ctiSoubor();" />-->
-<!--<img src="./img/gui/filter_icon48.png"title="Zapiš do souboru"  OnClick = "zapisDoSouboru();" />
-<img src="./img/gui/filter_icon48.png"title="ČTI ze souboru"  OnClick = "ctiSoubor('SOUBORTITAN.txt');" />-->
 
 </div> <!--navigace-->
 
@@ -243,9 +235,7 @@ alert("Got page initialized event!");
 <form id="searchForm" action="javascript:pageHomeCount = 1; search();" method="get">
   <input id = "searchInput" size="20"/>
   <input type="submit" id="searchSubmit" value="vyhledat" />
-  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
-  <!--<img src="./img/lupa.gif"/>-->
-  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
+  
 </form>
 <div id="twtFormDiv"><a href="#" onclick = "ukazForm('twtForm');"> [X] </a></div>
 <form id="twtForm" action="javascript:posliStatus(spojeni, replyStatusID)"  method="get">
@@ -254,14 +244,6 @@ alert("Got page initialized event!");
   <span id = "pocet"></span>
   <input type="submit" value="Odeslat" />
   </form>
-<!--
-<form id="XXYXXY" action="javascript:tKonretniTwt(spojeni)" method="get">
-  <input id = "twtID" size="10"/>
-  <input type="submit" id="twtSubmit" value="..." />-->
-  <!--<button onclick="tVypisPy(spojeni, 'search')" id="searchButton"><img src="./img/lupa.gif"/></button>-->
-  <!--<img src="./img/lupa.gif"/>-->
-  <!--<input type="image" name="obrazek"  onclick="tVypisPy(spojeni, 'search')" src="./img/lupa.gif">-->
-<!-- </form> -->
 
 <div id="timeLine" style="padding:10px">
     <h1 id="popisZobrazeni" name ="popisZobrazeni"></h1>
@@ -301,8 +283,7 @@ alert("Got page initialized event!");
 </div>-->
 
 <!--vizualizace-->
-<!--<a href="#" onclick = "vizualizuj(spojeni);"> VIZZZZ </a>-->
-<!--<div id="vizual"  onload="init();">-->
+
 <div id="jsn_vypis"></div>
 <div id="vizual">
     <div id="container">

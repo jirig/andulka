@@ -6,17 +6,27 @@ var vizFlag = 0;
 var tmpJSN;
 
 //window.addEventListener("onresize", resizeViz(), false);
-
+/*
 window.onresize = function()
 {
      resizeViz();
 }
-
+*/
 function resizeViz(){
 //    alert("resize")
+//if (this.contentTabs.get('activeIndex') == 1) {
+//  var cc = this.layout.getUnitById('content_col');
+//  InventoryGraph.resize(cc.get('height'),  cc.get('width'));
+//
+//}
+    ht.move({ x: 0, y: 0.7 }, {
+      hideLabels: true
+    });
+wid = window.innerWidth
+//window.document.getElementById("infovis-canvas").setAttribute("width",wid+"px")
 if(vizFlag)
 //    init(tmpJSN); vykresli znova coz uplne nechci
-//    window.document.getElementById("infovis").setAttribute("style","width:200px")
+      
     true
 }
 function presmeruj()
@@ -259,7 +269,8 @@ function dbPridatZaj(text){
          }
     }
 //    db.close()
-    alert(hm + ":" + a)
+    //alert(hm + ":" + a)
+    alert("Příspěvek byl přidán mezi zajímavé")
 }
 
 function dbPridatSpam(text){
@@ -280,35 +291,6 @@ function dbPridatSpam(text){
 //    db.close()
 
 
-
-
-/*
-    // spojeni s DB
-//     var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
-     db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
-
-    fSplit = twcm.replaceNonAlpha(text)
-
-    // pole s jednotlivymi slovy
-    arrPy = twcm.splitIt(fSplit);
-//    alert(arrPy)
-    hm = ""
-    a = 0
-    //alert(arrayPy)
-    while(arrPy.length > 0){
-        tmpS = arrPy.pop()
-    if(!(stopListTest(tmpS))){ // slovo neni ve stoplistu tak jej ulozi
-        dbUpdate(db, tmpS,0)
-//        a ++;
-//        hm += " " + tmpSlovo
-        
-        }
-        
-       
-    }
-//    db.close()
-    //alert(hm + ":" + a)
-    */
 }
 
 function bSelekce(){
@@ -352,7 +334,7 @@ function dbSpamWord(slovo){
     var pravSpam; // pravdepodobnost ze slovo je spam
 
 //    var db = Titanium.Database.openFile(Titanium.Filesystem.getFile(Titanium.Filesystem.getApplicationDataDirectory(),'bayDB.db'));
-    
+     db.execute("CREATE TABLE IF NOT EXISTS slovo(slovo, pocetN, pocetZ)");
     resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ? and pocetN > 1", slovo);
 //    resultSet = db.execute("SELECT * FROM slovo WHERE slovo = ?", slovo);
     spamPocet =  resultSet.fieldByName('pocetN');
@@ -390,11 +372,10 @@ function spamProb(statusId){
     var pZ = 1.0;
     var pN = 1.0;
     text = twcm.getTwt(spojeni, statusId)
-//    alert(statusId)
+
     forSplit = twcm.replaceNonAlpha(text)
-//    alert(forSplit)
+
     // pole s jednotlivymi slovy
-//    text = window.document.getElementById(statusId).innerHTML
      wordArray = twcm.splitIt(forSplit);
      while(wordArray.length > 0){
             tmpSlovo = wordArray.pop()
@@ -509,7 +490,8 @@ function timeLine(co){
             if(favorited) // nezajimavy
                     a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+dataList[i].user.screen_name+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
             else
-                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+                    a += "<div class='statusDiv'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'> RT </a> | "+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> @ </a> | <a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>+Z+</a> |  SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span> </span></div>"
+                    
            }
 
            else{ // zajimave
@@ -518,8 +500,10 @@ function timeLine(co){
                       zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a class='retweetimg' href='#' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><img src='../img/favorite_on.png' /><a href='#' onclick='unFavPy(spojeni,\""+statusid+"\")'>unFAV</a></span><span class='rawTextclass'>"+rawText+"</span></div>"
             }
             else{
-                    a += "<div class='statusDiv  zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
-                      zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+//                    a += "<div class='statusDiv  zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+                      a += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'> RT </a> | "+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> @ </a> | <a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>+Z+</a> |  SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span> </span></div>"
+//                      zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'>RT |</a>"+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> Reply |</a><a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>Zaj+</a> | <a href='#' onclick='spamProb(\""+statusid+"\")'>SP</a></span> SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span></div>"
+                        zajimaveTweety += "<div class='statusDiv zajStat'><img src='"+avatar+"'/><b>"+screenName+ "</b>" + "<br /><span id='"+statusid+"'>" + text + "</span><br /><span class='statusTimeSpan'>"+datum+"<a href='#' class='retweetimg' onclick='retwtPy(spojeni,\""+statusid+"\")'> RT </a> | "+"<a href='#' class='replyimg' onclick='reply(spojeni,\""+screenName+"\", \""+statusid+"\")'> @ </a> | <a href='#' class='favimg' onclick='newFavPy(spojeni,\""+statusid+"\")'>FAV</a> | <a href='#' onclick='dbPridatZaj(\""+rawText+"\")'>+Z+</a> |  SPAM = "+spam+" <span class='rawTextclass'>"+rawText+"</span> </span></div>"
             }
            }
      }
@@ -593,7 +577,7 @@ function prijmiPIN(){
 //     alert("PrijmiPIN - ZACATEK");
     pin = window.document.getElementById("PINInput").value
     window.document.getElementById("vyzva").setAttribute("style", "display:hidden;");
-    alert(pin)
+    //alert(pin)
     accesToken = twcm.prijmiPIN(spojeni, temp_credentials, pin);
     OAT = accesToken.oauth_token;
     OATS = accesToken.oauth_token_secret;
@@ -651,7 +635,8 @@ function search(){
      window.document.getElementById('timeLineZajimave').innerHTML =
     window.document.getElementById('skrytZajimave').setAttribute("style","display:block");
     window.document.getElementById('timeLineZajimave').setAttribute("style","display:block");
-    window.document.getElementById('popisZobrazeni').innerHTML = "<h1>Vyhledávání</h1>";
+     
+    window.document.getElementById('popisZobrazeni').innerHTML = "Vyhledávání";
     window.document.getElementById('timeLine').style.display = "block";
      if(schovano == 0)
        zobrazZajimave();
@@ -673,7 +658,7 @@ function search(){
           if(dataList['results'][i].retweeted_status && dataList['results'][i].truncated == true){
             text = twcm.replaceUrl(dataList['results'][i].retweeted_status.text,0)
             rawText = dataList['results'][i].retweeted_status.text
-            alert("TRUNCATED ... "+ text)
+            //alert("TRUNCATED ... "+ text)
           }
           else{
               text =  twcm.replaceUrl(dataList['results'][i].text,0)
@@ -861,13 +846,16 @@ function nactiID(){
    if (readFile.exists()){
       var readStream = Titanium.Filesystem.getFileStream(readFile);
       readStream.open(Titanium.Filesystem.MODE_READ);
-     if((LASTID = readStream.readLine()) != null) alert("ID "+LASTID)
+     if((LASTID = readStream.readLine()) != null)
+         true
+         //alert("ID "+LASTID)
      else LASTID = 0
       readStream.close();
 //      Titanium.API.info('OAT = ' + OAT + '  OATS = '+ OATS);
       return true;
    }
-    else {alert('NEEX NACTI_TOKENY');return false;}
+   else LASTID = 0
+//    else {alert('NEEXISTUJE soubor s poslednim ID');return false;}
 }
 
 function posliStatus(spojeni, replyStatusID){

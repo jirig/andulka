@@ -166,6 +166,10 @@ a {
     background-color: red;
     color: blue;
 }
+
+.zajStat b {
+    color:black;
+}
 .rawTextclass{
     color:#00c;
     display: none;
@@ -267,6 +271,10 @@ a {
 #searchButton{
     display: inline;
      line-height: 24px;
+}
+
+.statusTimeSpan{
+    color:#333;
 }
 
 .statusTimeSpan img{
